@@ -8,7 +8,7 @@ let {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 module.exports = {
 	entry: {
-        bundle:'./src/index.js'
+        app:'./src/index.js'
     },//入口文件
 	output: {
 		filename: '[name].js',//打包出口文件
@@ -18,40 +18,32 @@ module.exports = {
 		rules: [
 			{// 转换ES5
 				test: /\.(js|jsx)$/,
-				exclude: /node_modules/,
+				exclude: /node_modules/,// 排除掉node_modules，优化打包速度
 				use: {
-					loader: 'babel-loader'
+                    loader: 'babel-loader',
                 },
-                include: /src/,          // 只转化src目录下的js
-                exclude: /node_modules/  // 排除掉node_modules，优化打包速度
-			},
-            {// 解析less
-                test: /\.less$/,     
-                use: ExtractTextWebpackPlugin.extract({
-                    // 将css用link的方式引入就不再需要style-loader了
-                    fallback: "style-loader",
-                    use: ['css-loader', 'less-loader'] // 从右向左解析
-                })
             },
-            {// 解析scss
-                test: /\.scss$/,     
-                use: ExtractTextWebpackPlugin.extract({
-                    // 将css用link的方式引入就不再需要style-loader了
-                    fallback: "style-loader",
-                    use: ['css-loader', 'sass-loader'] // 从右向左解析
-                })
-            },
-            {// 解析css
-                test: /\.css$/,     
-                use: ExtractTextWebpackPlugin.extract({
-                    // 将css用link的方式引入就不再需要style-loader了
-                    fallback: "style-loader",
-                    use: ['css-loader']
-                })
+            // scss的解释其实就是在css解析的基础上加上 sass-loader 即可！
+            { test:/\.css$/,use: ['style-loader', 'css-loader']}, //匹配所有已.css结尾的文件
+            { test:/\.less$/,use: ['style-loader', 'css-loader','less-loader']},
+            {
+            test: /.scss$/,
+            use: [
+                'style-loader',
+                'css-loader',
+                'sass-loader'
+                ]
             },
 			{// 图片配置
 				test: /\.(png|svg|jpg|gif)$/,
-				use: ['url-loader']
+                use: [{
+                    loader:'url-loader',
+                    options:{
+                        name:"[name].[ext]",
+                        outputPath:"images/",//将图片打包到dist文件的image中
+                        limit:8192
+                    }
+                }]
 			},
 			{// 引用字体图片和svg图片
 				test: /\.(woff|woff2|eot|ttf|otf)$/,

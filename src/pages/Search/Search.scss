@@ -1,0 +1,112 @@
+.searchlogo {
+    width: 200px;
+    height: 100px;
+    display: block;
+    margin: 0 auto;
+}
+.search_form img{
+    vertical-align: middle;
+}
+.search_type ul{
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0
+}
+ol, ul, li {//没有点
+    list-style: none;
+}
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.top_hd {//表格的样式
+    padding: 30px 0;
+}
+.search_type ul li {//每个列表的样式
+    display: table-cell;
+    border: 1px solid #e5e5e5;
+    text-align: center;
+    padding: 6px 0;
+    width: 14.285%;
+    background-color: #f2f2f2;
+    vertical-align: middle;
+    color: #666;
+    cursor: pointer;
+}
+.search_type.cli_types ul li:nth-child(1).active {//列表active样式
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-bottom: none;
+    color: #0F63A8;
+}
+.search_type ul li.active {//列表active样式
+    color: #fff;
+    background-color: #0F63A8;
+    border: 1px solid #0F63A8;
+}
+.search_type2 {//子列表样式
+    padding-top: 0px;
+    position: relative;
+    border: 1px solid #e7e7e7;
+    margin-top: -10px;
+    border-top: none;
+    background-color: #fff;
+    padding: 15px;
+}
+.search_type2 ul li {//子列表样式
+    background-color: #fff;
+    z-index: 2;
+    position: relative;
+    border: none;
+}
+.form-control {//搜索框样式
+    padding: 6px 20px;
+    height: 45px;
+    // display: inline-block;
+    width: 80%;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.search_form .forms_in input[type='submit'] {
+    width: 20%;
+    height: 45px;
+    padding: 6px 20px;
+}
+.btn-primary {//按钮样式
+    display: inline-block;
+    color: #fff;
+    background-color: #428bca;
+    border-color: #357ebd;
+}
+.btn {//按钮样式
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.hot_key{//热搜样式
+    padding: 40px 0 200px 0;
+    text-align: center;
+}
+.hot_key a {//热搜a标签样式
+    display: inline-block;
+    padding: 0 10px;
+}
+a, a:FOCUS {//热搜a标签样式
+    color: #0F63A8;
+}

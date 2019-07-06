@@ -1,0 +1,47 @@
+.box_content{//中间内容样式
+    width: 1167px;
+    height: 290px;
+    margin: 0 auto;
+    position: absolute;
+    text-align: center;
+    left: 0;
+    right: 0;
+    top: 50%;
+    margin-top: -145px;
+    z-index: 99;
+}
+h1{//字体
+    display: block;
+    font-size: 3em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+h3 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+.btn_box{//按钮样式
+    width: 635px;
+    height: 80px;
+    margin: 65px auto 0;
+}
+.ant-btn-round.ant-btn-lg{
+    width: 280px;
+    height: 80px;
+    line-height: 40px;
+    font-size: 32px;
+    // float: left;
+    border-radius: 50px;
+    text-align: center;
+    color: #fff;
+    background: #1089da;
+    cursor: pointer;
+}

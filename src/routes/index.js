@@ -1,8 +1,8 @@
 import React from "react";
 import {Route, IndexRoute } from "react-router";
 import App from "../pages/App";
-import Home from "../pages/Home";
-import Search from "../pages/Search";
+import Home from "../pages/Home/Home";
+import Search from "../pages/Search/Search";
 import {fillStore} from "../untils/utils";
 
 
