@@ -3,14 +3,21 @@ import {Route, IndexRoute } from "react-router";
 import App from "../pages/App";
 import Home from "../pages/Home/Home";
 import Search from "../pages/Search/Search";
+import SearchResult from "../pages/SearchResult/SearchResult";
+import SearchContent from "../pages/SearchContent";
 import {fillStore} from "../untils/utils";
 
 
 const routes = (
-    <Route path="/" component={App}>
-        <IndexRoute component={Home}/>
-        <Route path="/search" component={Search} />
-    </Route>
+    <Route>
+      <Route path="/" component={App}>
+          <IndexRoute component={Home}/>
+          <Route path="/search" component={Search} />
+      </Route>
+      <Route component={SearchContent}>
+          <Route path="/search/result" component={SearchResult} />
+      </Route>
+   </Route>
 );
 
 function walk(routes, cb) {
