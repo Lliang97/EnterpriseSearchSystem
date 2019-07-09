@@ -2,6 +2,7 @@ import actions from "../constants/actions";
 
 const {
   GET_ENTERPRISE_SEARCH_SUCCESS,
+  GET_ENTERPRISE_NUMBER_SUCCESS
 } = actions;
 
 export default (state = {}, action) => {
@@ -11,6 +12,11 @@ export default (state = {}, action) => {
           ...state,
           EnSearchData: action.data
         };
+        case GET_ENTERPRISE_NUMBER_SUCCESS:
+          return {
+            ...state,
+            EnNumberData: action.data
+          };
         default:
             return state;
         }

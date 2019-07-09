@@ -66,14 +66,15 @@ export default class Home extends React.Component {
      });
   }
   handleClickSearchBtn = (e) =>{//点击搜索按钮跳转
-    console.log
     if(this.state.inputkey === '')
     {
       return ;//如果不为空才跳转
     }
     else{
-      this.context.router.push(`/search/result?${this.state.datakey}=${this.state.inputkey}`);
+      //console.log(localStorage)
+      this.context.router.push(`/result?${this.state.datakey}=${this.state.inputkey}`);
     }
+    
   }
   handleKeyDown = (e) =>{//键盘Enter事件
     if(e.keyCode === 13){ //主要区别就是这里，可以直接获取到keyCode的值

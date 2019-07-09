@@ -12,7 +12,15 @@ import Swust from '../images/swust.png';
 export default class App extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+          config2:{}
+        }
     }
+    configChange(config){
+      this.setState({
+        config2:config
+      })
+  }
     static childContextTypes = {
         location: React.PropTypes.object,
         route: React.PropTypes.object
@@ -30,7 +38,6 @@ export default class App extends React.Component {
         return (
         <div className="Dcontainer">
           <Layout>
-            
           <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
             <div className="headbar">
               <div className="headflefttbar">
