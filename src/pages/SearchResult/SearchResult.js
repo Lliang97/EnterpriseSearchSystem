@@ -22,7 +22,7 @@ export default class SearchResult extends React.Component {//搜索结果页面
       total: 0,//页数
       config: "",//参数
       placeholder: '请输入企业名,进行搜索',
-      display: 'block',
+      display: 'block', 
       list: [['公司搜索','bank','请输入公司名','companyName'],
       ['专利搜索','profile','请输入专利关键字','patent'],
       ['论文搜索','switcher','请输入论文关键字','paper'],
@@ -84,11 +84,22 @@ export default class SearchResult extends React.Component {//搜索结果页面
   //   return ;//如果不为空才跳转
   // }
   this.context.router.push(`/result?${this.state.datakey}=${this.state.inputkey}`);
-  let datakey = this.state.datakey;
-  let inputkey = this.state.inputkey;
-  
+  // let datakey = this.state.datakey;
+  // let inputkey = this.state.inputkey;
+  let url = this.props.location.search;//获得目前路由的后缀，比如，?companyName=小米
+  url = decodeURIComponent(url);//解码
+  //console.log(url);
+  let type = url.substring(1, url.indexOf("="));//获得查询条件，比如，companyName
+  let inputvalue = url.substring(url.indexOf("=")+1);//输入的查询值，比如，小米
   let config = {}//要传入到接口的参数
-  config[datakey] = inputkey;//将tpye以变量的方式存进config对象中
+  config[type] = inputvalue;//将tpye以变量的方式存进config对象中
+
+  if(this.mounted){//判断组件是否装载完毕
+    this.setState({//更新config
+    config: config
+    });
+  }
+  
   this.fetch(config);//获取页数
   this.getEnterpriseData(1, config);//获取公司数据
   }
@@ -207,12 +218,14 @@ export default class SearchResult extends React.Component {//搜索结果页面
         dataSource={this.state.enterprise_search_data}
         // pagination= 
         renderItem={item => (
+        <Link to={{ pathname: '/company', query: { companyName: item.companyName } }}>{/*根据选择的公司名跳转 */}
           <List.Item>
             <List.Item.Meta
-              title={<a href="https://ant.design">{item.companyName}</a>}
+              title={item.companyName}
               description={item.businessScope}
             />
           </List.Item>
+        </Link>
         )}
       />
       <Pagination

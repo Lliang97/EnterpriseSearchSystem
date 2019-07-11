@@ -20,7 +20,7 @@ export function getEnterprise_search(query = '') {
 		} catch (error) {
 			dispatch({
 				type: GET_ENTERPRISE_SEARCH_FAILURE,
-				error: new Error('搜索公司信息获取失败, 请稍后再试')
+				error: new Error('查询公司信息获取失败, 请稍后再试')
 			});
 		}
 	};
@@ -37,7 +37,7 @@ export function getEnterprise_number(query = '') {
 		} catch (error) {
 			dispatch({
 				type: GET_ENTERPRISE_NUMBER_FAILURE,
-				error: new Error('获取公司条数获取失败, 请稍后再试')
+				error: new Error('查询公司条数获取失败, 请稍后再试')
 			});
 		}
 	};

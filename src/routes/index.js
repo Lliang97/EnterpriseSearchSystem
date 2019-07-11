@@ -4,6 +4,7 @@ import App from "../pages/App";
 import Home from "../pages/Home/Home";
 import Search from "../pages/Search/Search";
 import SearchResult from "../pages/SearchResult/SearchResult";
+import Company from "../pages/Company/Company";
 // import SearchContent from "../pages/SearchContent";
 import {fillStore} from "../untils/utils";
 
@@ -14,6 +15,7 @@ const routes = (
           <IndexRoute component={Home}/>
           <Route path="/search" component={Search} />
           <Route path="/result" component={SearchResult} />
+          <Route path="/company" component={Company} />
       </Route>
       {/* <Route component={SearchContent}>
 

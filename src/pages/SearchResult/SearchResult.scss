@@ -63,7 +63,7 @@ ul, ol {
     margin-top: -10px;
     border-top: none;
     background-color: #fff;
-    padding: 15px;
+    padding-top: 10px;
 }
 .search_type2 ul li {//子列表样式
     background-color: #fff;
@@ -120,4 +120,14 @@ ul, ol {
 }
 a, a:FOCUS {//热搜a标签样式
     color: #0F63A8;
+}
+.ant-list-items li:hover {//每个li有阴影
+    //border: 5px solid #fff;
+    //margin-left: 15px;
+    // margin-right: 15px;
+    //margin-bottom: 20px;
+    position: relative;
+    //margin-top: 10px;
+    z-index: 20;
+    box-shadow: 5px 5px 5px 5px #ccc;
 }
