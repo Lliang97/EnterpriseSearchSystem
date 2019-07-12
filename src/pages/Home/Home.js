@@ -20,11 +20,11 @@ export default class Home extends React.Component {
                     公司搜索
                   </Button>
                 </Link>
-                <Link to="/search">
+                {/* <Link to="/search">
                   <Button type="primary" shape="round" icon="form" size='large' className="btn_release">
                     发布需求
                   </Button>
-                </Link>
+                </Link> */}
                 </div>
               </div>
             </div>

@@ -24,15 +24,16 @@ export default class SearchResult extends React.Component {//搜索结果页面
       placeholder: '请输入企业名,进行搜索',
       display: 'block', 
       list: [['公司搜索','bank','请输入公司名','companyName'],
+      ['公司区域搜索','profile','请输入公司区域','legalPerson'],
+      ['行业领域搜索','usergroup-delete','请输入行业关键字','area'],
       ['专利搜索','profile','请输入专利关键字','patent'],
       ['论文搜索','switcher','请输入论文关键字','paper'],
-      ['新闻搜索','switcher','请输入新闻关键字','news'],
-      ['著作搜索','robot','请输入著作权关键字','write'],
-      ['招聘搜索','usergroup-delete','请输入招聘关键字','recruit'],
-      ['行业领域搜索','usergroup-delete','请输入行业关键字','area']],
+      ['著作权搜索','robot','请输入著作权关键字','write'],
+      // ['新闻搜索','switcher','请输入新闻关键字','news'],
+      // ['招聘搜索','usergroup-delete','请输入招聘关键字','recruit']
+    ],
       current: '请输入公司名',
       list2: [['公司名搜索','bank','请输入公司名','companyName'],
-      ['公司地址搜索','profile','请输入公司地址','city'],
       ['公司法人搜索','delete','请输入公司法人','legalPerson']],
       current2: '请输入公司名',
       datakey: 'companyName',//当前被选中的标签
@@ -130,7 +131,7 @@ export default class SearchResult extends React.Component {//搜索结果页面
     let inputvalue = url.substring(url.indexOf("=")+1);//输入的查询值，比如，小米
     let config = {}//要传入到接口的参数
     config[type] = inputvalue;//将tpye以变量的方式存进config对象中
-
+    console.log(config)
 
     if(this.mounted){//判断组件是否装载完毕
       this.setState({//更新config
