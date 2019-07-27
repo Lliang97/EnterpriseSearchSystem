@@ -60,6 +60,10 @@ ul, ol {
     position: relative;
     border: none;
 }
+.search_type3 li {//区域搜索子列表样式
+    float: left;
+    height: 35px;
+}
 .form-control {//搜索框样式
     padding: 6px 20px;
     height: 45px;
@@ -110,3 +114,4 @@ ul, ol {
 a, a:FOCUS {//热搜a标签样式
     color: #0F63A8;
 }
+

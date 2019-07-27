@@ -14,8 +14,18 @@ import {getEnterprise_patent,
   getEnterprise_patentnumber} from '../../actions/getEnterprisePatent';
 import {getEnterprise_recruit,
   getEnterprise_recruitnumber} from '../../actions/getEnterpriseRecruit';
+import {getRelationship} from  '../../actions/getEnterpriseInfo';
 import {getEnterprise_copyright} from '../../actions/getEnterpriseWorkCopyright';
 import { List,Menu ,Pagination ,Icon,Row, Col } from 'antd';
+import Radar from '../../components/echarts/radar.js';
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/graph';
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/title';
+import 'echarts/lib/component/legend';
+import 'echarts/lib/component/toolbox';
+import 'echarts/lib/component/markPoint';
+import 'echarts/lib/component/markLine';
 import Logo from '../../images/logo.jpg';
 
 
@@ -31,23 +41,29 @@ export default class Company extends React.Component {//搜索结果页面
       config: "",//参数
       placeholder: '请输入企业名,进行搜索',
       display: 'block',
+      display2: 'none',
+      display3: 'none',
       list: [['公司搜索','bank','请输入公司名','companyName'],
-      ['公司区域搜索','profile','请输入公司区域','legalPerson'],
-      ['行业领域搜索','usergroup-delete','请输入行业关键字','area'],
+      ['公司区域搜索','profile','请输入公司区域','city'],
+      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry'],
       ['专利搜索','profile','请输入专利关键字','patent'],
       ['论文搜索','switcher','请输入论文关键字','paper'],
       ['著作权搜索','robot','请输入著作权关键字','write'],
-      // ['新闻搜索','switcher','请输入新闻关键字','news'],
-      // ['招聘搜索','usergroup-delete','请输入招聘关键字','recruit']
       ],
       current: '请输入公司名',
       list2: [['公司名搜索','bank','请输入公司名','companyName'],
       ['公司法人搜索','delete','请输入公司法人','legalPerson']],
+      list3: ['成都市','绵阳市','内江市','乐山市','德阳市','宜宾市','自贡市','攀枝花市'
+      ,'泸州市','广元市','遂宁市','南充市','眉山市','广安市','达州市','雅安市','资阳市'],
+      list4: ['制造业','信息传输、软件和信息技术服务业'],
       current2: '请输入公司名',
+      current5: '成都市',
+      current4: '制造业',
       datakey: 'companyName',//当前被选中的标签
       inputkey: '',//当前搜索框中的值
       current3: 'literature',//当前选中的公司信息
-      allinfo_data: []
+      allinfo_data: [],
+      companyName:""//公司名
     }
   };
   static childContextTypes = {
@@ -62,12 +78,15 @@ export default class Company extends React.Component {//搜索结果页面
   let datakey = item.target.getAttribute('data-key');
   if(this.mounted){//判断组件是否装载完毕
     this.setState({
-      display: value === '请输入公司名'?'block': 'none'//大类中是否显现子类搜索
-    });
+      display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
+      display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
+      display3: value === '请输入行业关键字'?'block': 'none'//大类中是否显现子类搜索
+     });
     this.setState({
       current: value,//改变目前的current指向
       placeholder: value,//搜索框的提示
-      datakey: datakey//当前被选中的标签
+      datakey: datakey,//当前被选中的标签
+      inputValue:''
     });
   }
   }
@@ -81,6 +100,38 @@ export default class Company extends React.Component {//搜索结果页面
         datakey: datakey
         });
     }
+  }
+  handleClickSearchArea = (item) =>{//子类搜索
+    let value = item.target.getAttribute('value');
+    this.context.router.push(`/result?city=${value}`);
+    let config = {}//要传入到接口的参数
+    config['city'] = value;//将tpye以变量的方式存进config对象中
+    if(this.mounted){//判断组件是否装载完毕
+      this.setState({//更新config
+      config: config
+      });
+    }
+    this.setState({
+      current5: value,
+     });
+     this.fetch(config);//获取页数
+     this.getEnterpriseData(1, config);//获取公司数据
+  }
+  handleClickSearchIndustry = (item) =>{//子类搜索
+    let value = item.target.getAttribute('value');
+    this.context.router.push(`/result?industry=${value}`);
+    let config = {}//要传入到接口的参数
+    config['industry'] = value;//将tpye以变量的方式存进config对象中
+    if(this.mounted){//判断组件是否装载完毕
+      this.setState({//更新config
+      config: config
+      });
+    }
+    this.setState({
+      current4: value,
+     });
+     this.fetch(config);//获取页数
+     this.getEnterpriseData(1, config);//获取公司数据
   }
   InputChange = (e) =>{
   if(this.mounted){//判断组件是否装载完毕
@@ -109,7 +160,8 @@ export default class Company extends React.Component {//搜索结果页面
   }
   getALLInfo = (page=1,key,config={}) =>{
     config.start = page;
-    config.rows = 10;//数量为10个
+    config.rows = 5;//数量为10个
+    //console.log(config)
     if(key === 'copyright'){//请求著作权
       this.props.dispatch(getEnterprise_copyright(toQuery(config))).then(() => {
       let data = this.props.home.EnCopyrightData.data;
@@ -161,7 +213,107 @@ export default class Company extends React.Component {//搜索结果页面
       });
     }
   }
-  componentDidMount(){
+  relationship = () => {
+    var myChart = echarts.init(document.getElementById('relationship'));
+    let config = {
+      companyName: localStorage.companyName
+    }
+    let secondarray = []
+    let thirdarray = []
+    var nodes = []
+    this.props.dispatch(getRelationship(toQuery(config))).then(() => {
+      let data = this.props.home.EnRelationshipData.data;
+      for (var i in data) {
+        secondarray.push(i)
+        for (var j in data[i]) {
+          thirdarray.push(data[i][j])
+        }
+      }
+      var webkitDep = {
+        "type": "force",
+        "categories": [
+          {
+            "name": "当前公司",
+            "base": "当前公司"
+          },
+          {
+            "name": "当前公司2",
+            "base": "当前公司2"
+          },
+          {
+            "name": "当前公司3",
+            "base": "当前公司3"
+          }
+        ],
+      };
+      nodes[0] = {
+        name: localStorage.companyName,
+        category: 0
+      }
+      let length = thirdarray.length;
+      for (var i = 0; i < secondarray.length; i++) {
+        nodes[i + 1] = {
+          name: secondarray[i],
+          category: 1,
+        }
+      }
+      var index = secondarray.length + 1;
+      for (var i = 0; i < thirdarray.length; i++) {
+        nodes[i + index] = {
+          name: thirdarray[i],
+          category: 2
+        }
+      }
+      var links = []
+      for (var i = 0; i < secondarray.length; i++) {
+        links[i] = {
+          source: 0,
+          target: i + 1
+        }
+      }
+      index = secondarray.length;
+      for (var i = 0; i < thirdarray.length; i++) {
+        for (var j = 0; j < secondarray.length; j++) {
+          links[index + i] = {
+            source: j + 1,
+            target: i + 1 + index
+          }
+        }
+      }
+      var option = {
+        title:{text: '投资图谱'},
+        legend: {
+          data: ['当前公司'],//此处的数据必须和关系网类别中name相对应
+          left: 'right'
+        },
+        series: [{
+          type: 'graph',
+          layout: 'force',
+          animation: false,
+          label: {
+            normal: {
+              show: true,
+              position: 'right'
+            }
+          },
+          symbolSize: 25,
+          draggable: true,
+          data: nodes.map(function (node, idx) {
+            node.id = idx;
+            return node;
+          }),
+          categories: webkitDep.categories,
+          force: {
+            edgeLength: 150,
+            repulsion: 100,
+          },
+          edges: links
+        }]
+      };
+      myChart.setOption(option);
+    })
+    }
+    componentDidMount(){
     //初始化调用
     this.getUrl();
     let url = this.props.location.search;//获得目前路由的后缀，比如，?companyName=小米
@@ -174,6 +326,8 @@ export default class Company extends React.Component {//搜索结果页面
     this.fetch('literature');
     //组件装载后时候，注册keypress事件
     document.addEventListener('keypress',this.handleKeyDown);
+    localStorage.companyName = inputvalue;
+    this.relationship();
   }
   componentWillUnmount(){
     //组件卸载时候，注销keypress事件
@@ -204,7 +358,7 @@ export default class Company extends React.Component {//搜索结果页面
   }
   getEnterpriseData = (page = 1, config) => {//获取公司数据
   config.start = page;//第几页
-  config.rows = 10;//数量为10个
+  config.rows = 5;//数量为10个
   this.props.dispatch(getEnterprise_search(toQuery(config))).then(() => {
   let data = this.props.home.EnSearchData.data[0];
   if(this.mounted){//判断组件是否装载完毕
@@ -451,6 +605,30 @@ export default class Company extends React.Component {//搜索结果页面
         </ul> 
       </div>
 
+      <div className="search_type search_type2 search_type3" style={{display: this.state.display2}}>
+                <ul>
+                  {this.state.list3.map(//通过读取list二重列表生成搜索的第二层(区域搜素)
+                    (item)=>(
+                    <li key={item} value={item} data-key={item}
+                    className={this.state.current5 === item ? 'active':''} 
+                    onClick={this.handleClickSearchArea.bind(this)}>{item}
+                    </li>)
+                    )}
+                </ul> 
+             </div>
+
+      <div className="search_type search_type2" style={{display: this.state.display3}}>
+        <ul>
+          {this.state.list4.map(//通过读取list二重列表生成搜索的第二层(行业领域搜素)
+            (item)=>(
+            <li key={item} value={item} data-key={item}
+            className={this.state.current4 === item ? 'active':''} 
+            onClick={this.handleClickSearchIndustry.bind(this)}>{item}
+            </li>)
+            )}
+        </ul> 
+      </div>
+
       </div>
         
       <div>
@@ -499,7 +677,10 @@ export default class Company extends React.Component {//搜索结果页面
           {Info()}
           </Col>
           <Col span={12}>{/* 页面右边 */}
-            col-12
+            <div>
+            <Radar/>
+            <div id="relationship" style={{ width: '100%', height: 300 }}></div>
+            </div>
           </Col>
           </Row>
           </div>

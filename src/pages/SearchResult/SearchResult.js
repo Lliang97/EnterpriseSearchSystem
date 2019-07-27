@@ -22,20 +22,25 @@ export default class SearchResult extends React.Component {//搜索结果页面
       total: 0,//页数
       config: "",//参数
       placeholder: '请输入企业名,进行搜索',
-      display: 'block', 
+      display: 'block',
+      display2: 'none',
+      display3: 'none',
       list: [['公司搜索','bank','请输入公司名','companyName'],
-      ['公司区域搜索','profile','请输入公司区域','legalPerson'],
-      ['行业领域搜索','usergroup-delete','请输入行业关键字','area'],
+      ['公司区域搜索','profile','请输入公司区域','city'],
+      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry'],
       ['专利搜索','profile','请输入专利关键字','patent'],
       ['论文搜索','switcher','请输入论文关键字','paper'],
       ['著作权搜索','robot','请输入著作权关键字','write'],
-      // ['新闻搜索','switcher','请输入新闻关键字','news'],
-      // ['招聘搜索','usergroup-delete','请输入招聘关键字','recruit']
-    ],
+      ],
       current: '请输入公司名',
       list2: [['公司名搜索','bank','请输入公司名','companyName'],
       ['公司法人搜索','delete','请输入公司法人','legalPerson']],
+      list3: ['成都市','绵阳市','内江市','乐山市','德阳市','宜宾市','自贡市','攀枝花市'
+      ,'泸州市','广元市','遂宁市','南充市','眉山市','广安市','达州市','雅安市','资阳市'],
+      list4: ['制造业','信息传输、软件和信息技术服务业'],
       current2: '请输入公司名',
+      current3: '成都市',
+      current4: '制造业',
       datakey: 'companyName',//当前被选中的标签
       inputkey: '',//当前搜索框中的值
     }
@@ -52,14 +57,17 @@ export default class SearchResult extends React.Component {//搜索结果页面
   let datakey = item.target.getAttribute('data-key');
   if(this.mounted){//判断组件是否装载完毕
     this.setState({
-      display: value === '请输入公司名'?'block': 'none'//大类中是否显现子类搜索
-    });
+      display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
+      display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
+      display3: value === '请输入行业关键字'?'block': 'none'//大类中是否显现子类搜索
+     });
     this.setState({
       current: value,//改变目前的current指向
       placeholder: value,//搜索框的提示
-      datakey: datakey//当前被选中的标签
+      datakey: datakey,//当前被选中的标签
+      inputValue:''
     });
-  }
+    }
   }
   handleClickSearchType2 = (item) =>{//子类搜索
   let value = item.target.getAttribute('value');
@@ -71,6 +79,38 @@ export default class SearchResult extends React.Component {//搜索结果页面
         datakey: datakey
         });
     }
+  }
+  handleClickSearchArea = (item) =>{//子类搜索
+    let value = item.target.getAttribute('value');
+    this.context.router.push(`/result?city=${value}`);
+    let config = {}//要传入到接口的参数
+    config['city'] = value;//将tpye以变量的方式存进config对象中
+    if(this.mounted){//判断组件是否装载完毕
+      this.setState({//更新config
+      config: config
+      });
+    }
+    this.setState({
+      current3: value,
+     });
+     this.fetch(config);//获取页数
+     this.getEnterpriseData(1, config);//获取公司数据
+  }
+  handleClickSearchIndustry = (item) =>{//子类搜索
+    let value = item.target.getAttribute('value');
+    this.context.router.push(`/result?industry=${value}`);
+    let config = {}//要传入到接口的参数
+    config['industry'] = value;//将tpye以变量的方式存进config对象中
+    if(this.mounted){//判断组件是否装载完毕
+      this.setState({//更新config
+      config: config
+      });
+    }
+    this.setState({
+      current4: value,
+     });
+     this.fetch(config);//获取页数
+     this.getEnterpriseData(1, config);//获取公司数据
   }
   InputChange = (e) =>{
   if(this.mounted){//判断组件是否装载完毕
@@ -131,7 +171,7 @@ export default class SearchResult extends React.Component {//搜索结果页面
     let inputvalue = url.substring(url.indexOf("=")+1);//输入的查询值，比如，小米
     let config = {}//要传入到接口的参数
     config[type] = inputvalue;//将tpye以变量的方式存进config对象中
-    console.log(config)
+    //console.log(config)
 
     if(this.mounted){//判断组件是否装载完毕
       this.setState({//更新config
@@ -212,6 +252,30 @@ export default class SearchResult extends React.Component {//搜索结果页面
         </ul> 
       </div>
 
+      <div className="search_type search_type2 search_type3" style={{display: this.state.display2}}>
+                <ul>
+                  {this.state.list3.map(//通过读取list二重列表生成搜索的第二层(区域搜素)
+                    (item)=>(
+                    <li key={item} value={item} data-key={item}
+                    className={this.state.current3 === item ? 'active':''} 
+                    onClick={this.handleClickSearchArea.bind(this)}>{item}
+                    </li>)
+                    )}
+                </ul> 
+             </div>
+
+      <div className="search_type search_type2" style={{display: this.state.display3}}>
+        <ul>
+          {this.state.list4.map(//通过读取list二重列表生成搜索的第二层(行业领域搜素)
+            (item)=>(
+            <li key={item} value={item} data-key={item}
+            className={this.state.current4 === item ? 'active':''} 
+            onClick={this.handleClickSearchIndustry.bind(this)}>{item}
+            </li>)
+            )}
+        </ul> 
+      </div>
+
       </div>
         <List
         itemLayout="horizontal"
@@ -223,8 +287,12 @@ export default class SearchResult extends React.Component {//搜索结果页面
           <List.Item>
             <List.Item.Meta
               title={item.companyName}
-              description={item.businessScope}
             />
+            <span>公司状态：{item.businessStatus}</span>&nbsp;&nbsp; &nbsp;&nbsp; 
+            <span>建立时间：{item.establishDate}</span>&nbsp;&nbsp; &nbsp;&nbsp; 
+            <span>注册资本：{item.registeredCapital}万</span>&nbsp;&nbsp; &nbsp;&nbsp;
+            <span>行业领域：{item.industry}</span>&nbsp;&nbsp; &nbsp;&nbsp; 
+            <span>公司地址：{item.address}</span>&nbsp;&nbsp; &nbsp;&nbsp; 
           </List.Item>
         </Link>
         )}
