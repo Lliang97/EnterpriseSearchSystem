@@ -24,17 +24,21 @@ a {//取消Link下划线
     padding: 10px 50px !important;
 }
 .homelogo {//公司图标样式
-    width: 150px;
+    width: 300px;
     height: 64px;
     margin: 16px 24px 16px 0;
     float: left;
     display: block;
     margin: 0 auto;
+    color: #080808; 
+    text-decoration: none;
+    font-size: 23px;
+    font-style: normal;
 }
 .corpration {//战略合作样式
     position: absolute;
     top: 0px;
-    right: 350px;
+    right: 250px;
     color: black;
     font-size: 16px;
 }

@@ -43,25 +43,25 @@ export default class Company extends React.Component {//搜索结果页面
       display: 'block',
       display2: 'none',
       display3: 'none',
-      list: [['公司搜索','bank','请输入公司名','companyName'],
-      ['公司区域搜索','profile','请输入公司区域','city'],
-      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry'],
+      list: [['企业搜索','bank','请输入公司名','companyName'],
       ['专利搜索','profile','请输入专利关键字','patent'],
-      ['论文搜索','switcher','请输入论文关键字','paper'],
+      ['文献搜索','switcher','请输入论文关键字','paper'],
       ['著作权搜索','robot','请输入著作权关键字','write'],
       ],
       current: '请输入公司名',
       list2: [['公司名搜索','bank','请输入公司名','companyName'],
-      ['公司法人搜索','delete','请输入公司法人','legalPerson']],
+      ['公司法人搜索','delete','请输入公司法人','legalPerson'],
+      ['企业区域搜索','profile','请输入公司区域','city'],
+      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry']],
       list3: ['成都市','绵阳市','内江市','乐山市','德阳市','宜宾市','自贡市','攀枝花市'
       ,'泸州市','广元市','遂宁市','南充市','眉山市','广安市','达州市','雅安市','资阳市'],
       list4: ['制造业','信息传输、软件和信息技术服务业'],
       current2: '请输入公司名',
-      current5: '成都市',
-      current4: '制造业',
+      current5: '',
+      current4: '',
       datakey: 'companyName',//当前被选中的标签
       inputkey: '',//当前搜索框中的值
-      current3: 'literature',//当前选中的公司信息
+      current3: 'patent',//当前选中的公司信息
       allinfo_data: [],
       companyName:""//公司名
     }
@@ -80,7 +80,7 @@ export default class Company extends React.Component {//搜索结果页面
     this.setState({
       display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
       display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
-      display3: value === '请输入行业关键字'?'block': 'none'//大类中是否显现子类搜索
+      display3: value === '请输入行业关键字'?'block': 'none',//大类中是否显现子类搜索
      });
     this.setState({
       current: value,//改变目前的current指向
@@ -93,6 +93,13 @@ export default class Company extends React.Component {//搜索结果页面
   handleClickSearchType2 = (item) =>{//子类搜索
   let value = item.target.getAttribute('value');
   let datakey = item.target.getAttribute('data-key');
+  if(this.mounted){//判断组件是否装载完毕
+    this.setState({
+          display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
+          display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
+          display3: value === '请输入行业关键字'?'block': 'none',//大类中是否显现子类搜索
+    });
+  }
   if(this.mounted){//判断组件是否装载完毕
     this.setState({
         current2: value,
@@ -296,6 +303,8 @@ export default class Company extends React.Component {//搜索结果页面
               position: 'right'
             }
           },
+          edgeSymbolSize: 10,
+          edgeSymbol: ['none', 'arrow'],
           symbolSize: 25,
           draggable: true,
           data: nodes.map(function (node, idx) {
@@ -322,8 +331,8 @@ export default class Company extends React.Component {//搜索结果页面
     let inputvalue = url.substring(url.indexOf("=")+1);//输入的查询值，比如，小米
     let config = {}//要传入到接口的参数
     config[type] = inputvalue;//将tpye以变量的方式存进config对象中
-    this.getALLInfo(1,'literature',config);
-    this.fetch('literature');
+    this.getALLInfo(1,'patent',config);
+    this.fetch('patent');
     //组件装载后时候，注册keypress事件
     document.addEventListener('keypress',this.handleKeyDown);
     localStorage.companyName = inputvalue;
@@ -432,9 +441,8 @@ export default class Company extends React.Component {//搜索结果页面
 
             <List.Item>
               <List.Item.Meta
-              title={item.document_name}
-              description={item.author}/>
-             来源：{item.source}
+              title={item.document_name}/>
+              {item.author} - 《{item.source}》
            </List.Item>
           )}
           />
@@ -488,7 +496,7 @@ export default class Company extends React.Component {//搜索结果页面
               <List.Item.Meta
                 title={item.patent_name}
               />
-                申请时间：{item.appli_time}
+                专利号：{item.appli_num}
            </List.Item>
           )}
           />
@@ -546,7 +554,7 @@ export default class Company extends React.Component {//搜索结果页面
               <div style={{float:'left'}}>
               <span style={{marginRight: '15px'}}>要求：{item.require}</span>
               <span style={{marginRight: '15px'}}>薪水：{item.salary}</span>
-              <span style={{marginRight: '15px'}}>发布时间：{item.hiring_time}</span>
+              {/* <span style={{marginRight: '15px'}}>发布时间：{item.hiring_time}</span> */}
               </div>
            </List.Item>
           )}
@@ -568,9 +576,6 @@ export default class Company extends React.Component {//搜索结果页面
 
 
       <div className="top_hd">
-      <div className="search_forms2">
-        <Link to="/"><img alt className="logo" src={Logo}/></Link>
-      </div>
 
       <div className="forms_in2">
       <input className="form-control2 key_name" type="text" id="keywordId" 
@@ -604,6 +609,7 @@ export default class Company extends React.Component {//搜索结果页面
             )}
         </ul> 
       </div>
+
 
       <div className="search_type search_type2 search_type3" style={{display: this.state.display2}}>
                 <ul>
@@ -648,6 +654,10 @@ export default class Company extends React.Component {//搜索结果页面
           onClick={this.handleClickCompanyMessge} 
           selectedKeys={[this.state.current3]} 
           mode="horizontal">
+          <Menu.Item key="patent">
+            <Icon type="book" />
+            专利
+          </Menu.Item>
           <Menu.Item key="literature">
             <Icon type="switcher" />
             科技文献
@@ -655,10 +665,6 @@ export default class Company extends React.Component {//搜索结果页面
           <Menu.Item key="copyright">
             <Icon type="edit" />
             软件著作权
-          </Menu.Item>
-          <Menu.Item key="patent">
-            <Icon type="book" />
-            专利
           </Menu.Item>
           <Menu.Item key="news">
             <Icon type="message" />

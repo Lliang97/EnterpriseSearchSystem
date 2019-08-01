@@ -8,7 +8,6 @@ import { toQuery } from "../../untils/utils";//封装的请求函数
 import {getEnterprise_search,
   getEnterprise_number} from '../../actions/getEnterpriseSearch';//获取函数
 import { List ,Pagination ,Icon} from 'antd';
-import Logo from '../../images/logo.jpg';
 
 
 @connect(state => ({
@@ -25,22 +24,22 @@ export default class SearchResult extends React.Component {//搜索结果页面
       display: 'block',
       display2: 'none',
       display3: 'none',
-      list: [['公司搜索','bank','请输入公司名','companyName'],
-      ['公司区域搜索','profile','请输入公司区域','city'],
-      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry'],
+      list: [['企业搜索','bank','请输入公司名','companyName'],
       ['专利搜索','profile','请输入专利关键字','patent'],
-      ['论文搜索','switcher','请输入论文关键字','paper'],
+      ['文献搜索','switcher','请输入论文关键字','paper'],
       ['著作权搜索','robot','请输入著作权关键字','write'],
       ],
       current: '请输入公司名',
       list2: [['公司名搜索','bank','请输入公司名','companyName'],
-      ['公司法人搜索','delete','请输入公司法人','legalPerson']],
+      ['公司法人搜索','delete','请输入公司法人','legalPerson'],
+      ['企业区域搜索','profile','请输入公司区域','city'],
+      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry']],
       list3: ['成都市','绵阳市','内江市','乐山市','德阳市','宜宾市','自贡市','攀枝花市'
       ,'泸州市','广元市','遂宁市','南充市','眉山市','广安市','达州市','雅安市','资阳市'],
       list4: ['制造业','信息传输、软件和信息技术服务业'],
       current2: '请输入公司名',
-      current3: '成都市',
-      current4: '制造业',
+      current3: '',
+      current4: '',
       datakey: 'companyName',//当前被选中的标签
       inputkey: '',//当前搜索框中的值
     }
@@ -59,7 +58,7 @@ export default class SearchResult extends React.Component {//搜索结果页面
     this.setState({
       display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
       display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
-      display3: value === '请输入行业关键字'?'block': 'none'//大类中是否显现子类搜索
+      display3: value === '请输入行业关键字'?'block': 'none',//大类中是否显现子类搜索
      });
     this.setState({
       current: value,//改变目前的current指向
@@ -72,6 +71,13 @@ export default class SearchResult extends React.Component {//搜索结果页面
   handleClickSearchType2 = (item) =>{//子类搜索
   let value = item.target.getAttribute('value');
   let datakey = item.target.getAttribute('data-key');
+  if(this.mounted){//判断组件是否装载完毕
+    this.setState({
+          display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
+          display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
+          display3: value === '请输入行业关键字'?'block': 'none',//大类中是否显现子类搜索
+    });
+  }
   if(this.mounted){//判断组件是否装载完毕
     this.setState({
         current2: value,
@@ -129,7 +135,6 @@ export default class SearchResult extends React.Component {//搜索结果页面
   // let inputkey = this.state.inputkey;
   let url = this.props.location.search;//获得目前路由的后缀，比如，?companyName=小米
   url = decodeURIComponent(url);//解码
-  //console.log(url);
   let type = url.substring(1, url.indexOf("="));//获得查询条件，比如，companyName
   let inputvalue = url.substring(url.indexOf("=")+1);//输入的查询值，比如，小米
   let config = {}//要传入到接口的参数
@@ -215,9 +220,9 @@ export default class SearchResult extends React.Component {//搜索结果页面
 
 
       <div className="top_hd">
-      <div className="search_forms2">
+      {/* <div className="search_forms2">
         <Link to="/"><img alt className="logo" src={Logo}/></Link>
-      </div>
+      </div> */}
 
       <div className="forms_in2">
       <input className="form-control2 key_name" type="text" id="keywordId" 
@@ -251,6 +256,7 @@ export default class SearchResult extends React.Component {//搜索结果页面
             )}
         </ul> 
       </div>
+
 
       <div className="search_type search_type2 search_type3" style={{display: this.state.display2}}>
                 <ul>

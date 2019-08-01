@@ -4,7 +4,6 @@ import {
 } from 'react-router';
 import './Search.scss';
 import { connect } from 'react-redux';
-import Logo from '../../images/logo.jpg';
 import { Icon  } from 'antd';
 
 @connect(state => ({
@@ -19,22 +18,22 @@ export default class Home extends React.Component {
       display: 'block',
       display2: 'none',
       display3: 'none',
-      list: [['公司搜索','bank','请输入公司名','companyName'],
-      ['公司区域搜索','profile','请输入公司区域','city'],
-      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry'],
+      list: [['企业搜索','bank','请输入公司名','companyName'],
       ['专利搜索','profile','请输入专利关键字','patent'],
-      ['论文搜索','switcher','请输入论文关键字','paper'],
+      ['文献搜索','switcher','请输入论文关键字','paper'],
       ['著作权搜索','robot','请输入著作权关键字','write'],
-    ],
+      ],
       current: '请输入公司名',
       list2: [['公司名搜索','bank','请输入公司名','companyName'],
-      ['公司法人搜索','delete','请输入公司法人','legalPerson']],
+      ['公司法人搜索','delete','请输入公司法人','legalPerson'],
+      ['企业区域搜索','profile','请输入公司区域','city'],
+      ['行业领域搜索','usergroup-delete','请输入行业关键字','industry']],
       list3: ['成都市','绵阳市','内江市','乐山市','德阳市','宜宾市','自贡市','攀枝花市'
-      ,'泸州市','广元市','遂宁市','南充市','眉山市','广安市','达州市','雅安市','资阳市','其他'],
+      ,'泸州市','广元市','遂宁市','南充市','眉山市','广安市','达州市','雅安市','资阳市'],
       list4: ['制造业','信息传输、软件和信息技术服务业'],
       current2: '请输入公司名',
-      current3: '成都市',
-      current4: '制造业',
+      current3: '',
+      current4: '',
       datakey: 'companyName',//当前被选中的标签
       inputkey: '',//当前搜索框中的值
     }
@@ -52,7 +51,7 @@ export default class Home extends React.Component {
     this.setState({
       display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
       display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
-      display3: value === '请输入行业关键字'?'block': 'none'//大类中是否显现子类搜索
+      display3: value === '请输入行业关键字'?'block': 'none',//大类中是否显现子类搜索
      });
     this.setState({
       current: value,//改变目前的current指向
@@ -64,6 +63,11 @@ export default class Home extends React.Component {
   handleClickSearchType2 = (item) =>{//子类搜索
     let value = item.target.getAttribute('value');
     let datakey = item.target.getAttribute('data-key');
+    this.setState({
+      display: value === '请输入公司名'?'block': 'none',//大类中是否显现子类搜索
+      display2: value === '请输入公司区域'?'block': 'none',//大类中是否显现子类搜索
+      display3: value === '请输入行业关键字'?'block': 'none',//大类中是否显现子类搜索
+     });
     this.setState({
       current2: value,
       placeholder: value,
@@ -117,8 +121,8 @@ export default class Home extends React.Component {
 
   render() {
     return (
-          <div className="search_form" style={{ padding: '0px 250px'}}>
-            <Link to="/"><img alt className="searchlogo" src={Logo}/></Link>
+          <div className="search_form" style={{ padding: '100px 250px 0 250px'}}>
+            {/* <span className="searchlogo" /> */}
 
             <div className="top_hd">
               <div className="search_type cli_types">
@@ -144,6 +148,7 @@ export default class Home extends React.Component {
                     )}
                 </ul> 
              </div>
+
 
              <div className="search_type search_type2 search_type3" style={{display: this.state.display2}}>
                 <ul>

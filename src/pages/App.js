@@ -41,30 +41,29 @@ export default class App extends React.Component {
           <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
             <div className="headbar">
               <div className="headflefttbar">
-                <Link to="/"><img alt className="homelogo" src={Logo}/></Link>
+                <Link to="/"><span className="homelogo" >企业创新能力分析系统</span></Link>
                 <Menu
                   mode="horizontal"
                   style={{ lineHeight: '64px' }}
                 >
-                  <Menu.Item key="1">关于我们</Menu.Item>
-                  <Menu.Item key="2">企业资源</Menu.Item>
-                  <Menu.Item key="3">项目需求</Menu.Item>
-                  <Menu.Item key="4"><Link to="/search">企业搜索</Link></Menu.Item>
-                  <Menu.Item key="5">企业成果</Menu.Item>
+                  <Menu.Item key="1"><Link to="/search">企业搜索</Link></Menu.Item>
+                  <Menu.Item key="2"><Link to="/search">专利搜索</Link></Menu.Item>
+                  <Menu.Item key="3"><Link to="/search">论文搜索</Link></Menu.Item> 
+                  <Menu.Item key="4"><Link to="/search">著作权搜索</Link></Menu.Item>
                 </Menu>
               </div>
               <a className="corpration" href="http://www.swust.edu.cn/" target="_blank" alt="西南科技大学知识工程实验室">
                 <img  className="swustlogo" src={Swust}/>
               <span>战略合作</span>
               </a>
-              <Menu
+              {/* <Menu
                   mode="horizontal"
                   className="register"
                   style={{ lineHeight: '64px' }}
                 >
                   <Menu.Item key="1">登录</Menu.Item>
                   <Menu.Item key="2">注册</Menu.Item>
-                </Menu>
+                </Menu> */}
             </div>
           </Header>
 
