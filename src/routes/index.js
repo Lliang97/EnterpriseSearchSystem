@@ -5,7 +5,9 @@ import Home from "../pages/Home/Home";
 import Search from "../pages/Search/Search";
 import SearchResult from "../pages/SearchResult/SearchResult";
 import Company from "../pages/Company/Company";
-// import SearchContent from "../pages/SearchContent";
+import Patent from "../pages/Patent/Patent";
+import Literature from "../pages/Literature/Literature";
+import Copyright from "../pages/Copyright/Copyright";
 import {fillStore} from "../untils/utils";
 
 
@@ -16,6 +18,9 @@ const routes = (
           <Route path="/search" component={Search} />
           <Route path="/result" component={SearchResult} />
           <Route path="/company" component={Company} />
+          <Route path="/patent" component={Patent} />
+          <Route path="/literature" component={Literature} />
+          <Route path="/copyright" component={Copyright} />
       </Route>
       {/* <Route component={SearchContent}>
 

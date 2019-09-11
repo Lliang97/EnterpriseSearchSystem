@@ -20,8 +20,8 @@ export default class Home extends React.Component {
       display3: 'none',
       list: [['企业搜索','bank','请输入公司名','companyName'],
       ['专利搜索','profile','请输入专利关键字','patent'],
-      ['文献搜索','switcher','请输入论文关键字','paper'],
-      ['著作权搜索','robot','请输入著作权关键字','write'],
+      ['文献搜索','switcher','请输入论文关键字','literature'],
+      ['著作权搜索','robot','请输入著作权关键字','copyright'],
       ],
       current: '请输入公司名',
       list2: [['公司名搜索','bank','请输入公司名','companyName'],
@@ -59,6 +59,7 @@ export default class Home extends React.Component {
       datakey: datakey,//当前被选中的标签
       inputValue:''
     });
+    console.log(datakey+value);
   }
   handleClickSearchType2 = (item) =>{//子类搜索
     let value = item.target.getAttribute('value');
@@ -98,8 +99,14 @@ export default class Home extends React.Component {
     {
       return ;//如果不为空才跳转
     }
-    else{
+    else if(this.state.datakey=='companyName'){
       this.context.router.push(`/result?${this.state.datakey}=${this.state.inputkey}`);
+    }else if(this.state.datakey=='patent'){
+      this.context.router.push(`/patent?patentName=${this.state.inputkey}`);
+    }else if(this.state.datakey=='literature'){
+      this.context.router.push(`/literature?literatureName=${this.state.inputkey}`);
+    }else if(this.state.datakey=='copyright'){
+      this.context.router.push(`/copyright?copyrightName=${this.state.inputkey}`);
     }
   }
   handleHotSearch = (e) =>{
