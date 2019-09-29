@@ -1,78 +1,110 @@
-import React from 'react'
-import { List, Table, Pagination, Icon, Row, Col } from 'antd';
-import Radar from '../../components/echarts/radar.js';
-import echarts from 'echarts/lib/echarts';
-import 'echarts/lib/chart/graph';
-import 'echarts/lib/component/tooltip';
-import 'echarts/lib/component/title';
-import 'echarts/lib/component/legend';
-import 'echarts/lib/component/toolbox';
-import 'echarts/lib/component/markPoint';
-import 'echarts/lib/component/markLine';
-import "antd/dist/antd.css";
 import CopyrightPie from '../../components/echarts/CopyrightPie.js';
-const data = [
-    {
-        title: '软件著作权1',
-    },
-    {
-        title: '软件著作权2',
-    },
-    {
-        title: '软件著作权3',
-    },
-    {
-        title: '软件著作权4',
-    },
-    {
-        title: '软件著作权5',
-    },
-    {
-        title: '软件著作权6',
-    },
-    {
-        title: '软件著作权7',
-    },
-];
+import React from 'react'
+import { List, Table, Pagination, Icon, Row, Col, Result } from 'antd';
+import "antd/dist/antd.css";
+import { getEnterprise_softWareQueryByKeyWord,
+    getEnterprise_softWareCompanyNumber } from '../../actions/getEnterpriseWorkCopyright';
+import { connect } from 'react-redux';
+import { toQuery } from "../../untils/utils";//封装的请求函数
+
 const columns = [
     {
         title: '公司名',
         dataIndex: 'companyName',
     },
     {
-        title: '软著数量',
-        dataIndex: 'pantentNumber',
-    },
-];
-const data2 = [
-    {
-        key: '1',
-        companyName: '川开电气有限公司',
-        pantentNumber: 32,
-    },
-    {
-        key: '2',
-        companyName: '东方日立(成都)电控设备有限公司',
-        pantentNumber: 42,
-    },
-    {
-        key: '3',
-        companyName: '成都宝通天宇电子科技有限公司',
-        pantentNumber: 20,
-    },
-    {
-        key: '4',
-        companyName: '东方电气集团东方汽轮机有限公司',
-        pantentNumber: 10,
-    },
-    {
-        key: '5',
-        companyName: '西南科技大学',
-        pantentNumber: 10,
+        title: '文献数量',
+        dataIndex: 'copyrightNumber',
     },
 ];
 
+@connect(state => ({
+    home: state.home
+}))
 export default class Copyright extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            copyrightlist_data: [],
+            copyrightcompanynumber_data: [],
+            keywrod:''
+        }
+    }
+    static childContextTypes = {
+        location: React.PropTypes.object,
+        route: React.PropTypes.object
+    };
+    static contextTypes = {
+        router: React.PropTypes.object
+    };
+    getCopyrightList = (page = 1, config = {}) => {
+        config.start = page;
+        config.rows = 10;//数量为10个
+        //console.log(config)
+        this.props.dispatch(getEnterprise_softWareQueryByKeyWord(toQuery(config))).then(() => {
+            let data = this.props.home.EnSoftWareByKeyWordData.data;
+            // console.log(data);
+            if (this.mounted) {//判断组件是否装载完毕
+                this.setState({
+                    copyrightlist_data: data
+                });
+            }
+        });
+    }
+    sortCopyrihtNumber = (a,b)=>{
+        return b.copyrightNumber-a.copyrightNumber
+    }
+    get_CopyrihtCompanyNumber = (page = 1, config = {}) =>{
+        config.start = page;
+        config.rows = 6;//数量为5个
+        //console.log(config)
+        this.props.dispatch(getEnterprise_softWareCompanyNumber(toQuery(config))).then(() => {
+            let data = this.props.home.EnSoftWareCompanyNumberData.data;  
+            let result=[];
+            let key=1;
+            for(let item in data){
+                let jsondata={}
+                jsondata.key=key;
+                jsondata.companyName=item;
+                jsondata.copyrightNumber=data[item];
+                key++;
+                result.push(jsondata);
+            }
+            result.sort(this.sortCopyrihtNumber);
+            //console.log(result)
+            if (this.mounted) {//判断组件是否装载完毕
+                this.setState({
+                    copyrightcompanynumber_data: result
+                });
+            }
+        });
+    }
+    componentWillUnmount() {
+        //组件卸载时候，注销keypress事件
+        this.mounted = false;
+        this.setState = (state, callback) => {
+            return;
+        };
+    }
+    componentWillMount() {//装载完毕
+        this.mounted = true;
+    }
+    componentDidMount() {
+        let url = this.props.location.search;//获得目前路由的后缀，比如，?patentName=小米
+        url = decodeURIComponent(url);//解码
+        let type = url.substring(1, url.indexOf("="));//获得查询条件，比如，patentName
+        let inputvalue = url.substring(url.indexOf("=") + 1);//输入的查询值，比如，电力
+        let config = {}//要传入到接口的参数
+        config['keyword'] = inputvalue;//将tpye以变量的方式存进config对象中
+        localStorage.copyrightName=inputvalue;
+        if (this.mounted) {//判断组件是否装载完毕
+            this.setState({
+                keyword: inputvalue
+            });
+        }
+        this.getCopyrightList(1, config);
+        this.get_CopyrihtCompanyNumber(1,config); 
+    }
     render() {
         return (
             <div >
@@ -80,21 +112,23 @@ export default class Copyright extends React.Component {
                     <Col span={12}>
                         <List
                             itemLayout="horizontal"
-                            dataSource={data}
+                            dataSource={this.state.copyrightlist_data}
                             renderItem={item => (
                                 <List.Item>
                                     <List.Item.Meta
-                                        title={<a href="https://ant.design">{item.title}</a>}
-                                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                                        title={item.softwareName}
                                     />
+                                    {item.companyName}
+                                    <span style={{float:'right'}}>{item.registrationApprovalDate}</span>
                                 </List.Item>
                             )}
                         />
                     </Col>
                     <Col span={12}>
-                        <Table columns={columns} dataSource={data2} size="middle" />
-                        <CopyrightPie/>
+                        <Table columns={columns} dataSource={this.state.copyrightcompanynumber_data} size="middle" />
+                        <CopyrightPie />
                     </Col>
+
                 </Row>
             </div>
         )

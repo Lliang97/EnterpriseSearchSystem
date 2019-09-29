@@ -12,7 +12,19 @@ const {
   GET_ENTERPRISE_RECRUIT_SUCCESS,//查询公司招聘
   GET_ENTERPRISE_RECRUITNUMBER_SUCCESS,//查询公司招聘条数
   GET_ENTERPRISE_COPYRIGHT_SUCCESS,//查询公司著作权
-  GET_RELATIONSHIP_SUCCESS//获取公司投资图
+  GET_RELATIONSHIP_SUCCESS,//获取公司投资图
+
+  GET_ENTERPRISE_PATENTLIST_SUCCESS,//关键字模糊查询专利列表
+  GET_ENTERPRISE_PATENTTYPENUMBER_SUCCESS,//统计关键字关联的专利的类型及数量
+  GET_ENTERPRISE_PATENTCOMPANYNUMBER_SUCCESS,//关键字查询公司拥有的专利及数量
+
+  GET_ENTERPRISE_LITERATQUERYBYKEYWORD_SUCCESS,//关键字模糊查询文献
+  GET_ENTERPRISE_LITERATTYPENUMBER_SUCCESS,//统计关键字所关联的文献的类型及数量
+  GET_ENTERPRISE_LITERATCOMPANYNUMBER_SUCCESS,//关键字查询公司所拥有的文献及数量
+
+  GET_ENTERPRISE_SOFTWAREQUERYBYKEYWORD_SUCCESS,//关键字模糊查询软著
+  GET_ENTERPRISE_SOFTWARECOMPANYNUMBER_SUCCESS,//关键字查询公司拥有的软著及数量
+  GET_ENTERPRISE_SOFTWARETYPENUMBER_SUCCESS,//统计关键字所关联的著作权的类型及数量
 } = actions;
 
 export default (state = {}, action) => {
@@ -76,6 +88,51 @@ export default (state = {}, action) => {
         return {
           ...state,
           EnRelationshipData: action.data
+        };
+        case GET_ENTERPRISE_PATENTLIST_SUCCESS://关键字模糊查询专利列表
+        return {
+          ...state,
+          EnPatentListData: action.data
+        };
+        case GET_ENTERPRISE_PATENTTYPENUMBER_SUCCESS://统计关键字关联的专利的类型及数量
+        return {
+          ...state,
+          EnPatentTypeNumberData: action.data
+        };
+        case GET_ENTERPRISE_PATENTCOMPANYNUMBER_SUCCESS://关键字查询公司拥有的专利及数量
+        return {
+          ...state,
+          EnPatentCompanyNumberData: action.data
+        };
+        case GET_ENTERPRISE_LITERATQUERYBYKEYWORD_SUCCESS://关键字模糊查询文献
+        return {
+          ...state,
+          EnLiteratureQueryByKeyWordData: action.data
+        };
+        case GET_ENTERPRISE_LITERATTYPENUMBER_SUCCESS://统计关键字所关联的文献的类型及数量
+        return {
+          ...state,
+          EnLiteratureTypeNumberData: action.data
+        };
+        case GET_ENTERPRISE_LITERATCOMPANYNUMBER_SUCCESS://关键字查询公司所拥有的文献及数量
+        return {
+          ...state,
+          EnLiteratureCompanyNumberData: action.data
+        };
+        case GET_ENTERPRISE_SOFTWAREQUERYBYKEYWORD_SUCCESS://关键字模糊查询软著
+        return {
+          ...state,
+          EnSoftWareByKeyWordData: action.data
+        };
+        case GET_ENTERPRISE_SOFTWARECOMPANYNUMBER_SUCCESS://关键字查询公司拥有的软著及数量
+        return {
+          ...state,
+          EnSoftWareCompanyNumberData: action.data
+        };
+        case GET_ENTERPRISE_SOFTWARETYPENUMBER_SUCCESS://统计关键字所关联的著作权的类型及数量
+        return {
+          ...state,
+          EnSoftWareTypeNumberData: action.data
         };
         default:
             return state;

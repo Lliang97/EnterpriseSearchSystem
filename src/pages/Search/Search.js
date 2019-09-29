@@ -59,7 +59,7 @@ export default class Home extends React.Component {
       datakey: datakey,//当前被选中的标签
       inputValue:''
     });
-    console.log(datakey+value);
+    //console.log(datakey+value);
   }
   handleClickSearchType2 = (item) =>{//子类搜索
     let value = item.target.getAttribute('value');
@@ -98,15 +98,14 @@ export default class Home extends React.Component {
     if(this.state.inputkey === '')
     {
       return ;//如果不为空才跳转
-    }
-    else if(this.state.datakey=='companyName'){
-      this.context.router.push(`/result?${this.state.datakey}=${this.state.inputkey}`);
     }else if(this.state.datakey=='patent'){
       this.context.router.push(`/patent?patentName=${this.state.inputkey}`);
     }else if(this.state.datakey=='literature'){
       this.context.router.push(`/literature?literatureName=${this.state.inputkey}`);
     }else if(this.state.datakey=='copyright'){
       this.context.router.push(`/copyright?copyrightName=${this.state.inputkey}`);
+    }else{
+      this.context.router.push(`/result?${this.state.datakey}=${this.state.inputkey}`);
     }
   }
   handleHotSearch = (e) =>{
