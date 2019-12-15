@@ -24,9 +24,10 @@ import {
 } from '../../actions/getEnterpriseRecruit';
 import { getRelationship } from '../../actions/getEnterpriseInfo';
 import { getEnterprise_copyright } from '../../actions/getEnterpriseWorkCopyright';
-import { List, Menu, Pagination, Icon, Row, Col } from 'antd';
+import { List, Menu, Pagination, Icon, Row, Col, Breadcrumb } from 'antd';
 import Radar from '../../components/echarts/radar.js';
 import echarts from 'echarts/lib/echarts';
+import SearchResultHead from '../HeadComponent/SearchResultHead.js'
 import 'echarts/lib/chart/graph';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
@@ -34,9 +35,8 @@ import 'echarts/lib/component/legend';
 import 'echarts/lib/component/toolbox';
 import 'echarts/lib/component/markPoint';
 import 'echarts/lib/component/markLine';
-import Logo from '../../images/logo.jpg';
-
-
+import { createHashHistory } from 'history'; //做返回
+const history = createHashHistory();
 @connect(state => ({
   home: state.home
 }))
@@ -63,7 +63,9 @@ export default class Company extends React.Component {//搜索结果页面
       ['行业领域搜索', 'usergroup-delete', '请输入行业关键字', 'industry']],
       list3: ['成都市', '绵阳市', '内江市', '乐山市', '德阳市', '宜宾市', '自贡市', '攀枝花市'
         , '泸州市', '广元市', '遂宁市', '南充市', '眉山市', '广安市', '达州市', '雅安市', '资阳市'],
-      list4: ['制造业', '信息传输、软件和信息技术服务业'],
+      list4: ['制造业', '科学研究和技术服务业', '信息传输、软件和信息技术服务业', '金融业'],
+      list5: ['建筑业', '批发和零售业', '住宿和餐饮业', '交通运输、仓库和邮政业'],
+      list6: ['水利、环境和公共设施管理业', '居民服务、修理和其他服务业', '租赁和商务服务业', '农、林、牧、渔业'],
       current2: '请输入公司名',
       current5: '',
       current4: '',
@@ -71,7 +73,9 @@ export default class Company extends React.Component {//搜索结果页面
       inputkey: '',//当前搜索框中的值
       current3: 'patent',//当前选中的公司信息
       allinfo_data: [],
-      companyName: ""//公司名
+      companyName: "",//公司名
+      buttonValue: '企业搜索',
+      innovation_data: [],//创新能力数据
     }
   };
   static childContextTypes = {
@@ -95,6 +99,24 @@ export default class Company extends React.Component {//搜索结果页面
         placeholder: value,//搜索框的提示
         datakey: datakey,//当前被选中的标签
         inputValue: ''
+      });
+    }
+    if (datakey == 'companyName') {
+      this.setState({
+        buttonValue: '企业搜索'
+      });
+    } else if (datakey == 'patent') {
+      this.setState({
+        buttonValue: '专利搜索'
+      });
+    } else if (datakey == 'literature') {
+      this.setState({
+        buttonValue: '文献搜索'
+      });
+    }
+    else if (datakey == 'copyright') {
+      this.setState({
+        buttonValue: '著作权搜索'
       });
     }
   }
@@ -168,11 +190,11 @@ export default class Company extends React.Component {//搜索结果页面
       this.context.router.push(`/result?${this.state.datakey}=${this.state.inputkey}`);
     }
   }
-  handleKeyDown = (e) => {//键盘Enter事件
-    if (e.keyCode === 13) { //主要区别就是这里，可以直接获取到keyCode的值
-      this.handleClickSearchBtn()
-    }
-  }
+  // handleKeyDown = (e) => {//键盘Enter事件
+  //   if (e.keyCode === 13) { //主要区别就是这里，可以直接获取到keyCode的值
+  //     this.handleClickSearchBtn()
+  //   }
+  // }
   handleClickCompanyMessge = (e) => {//点击查看公司的科技文献等
     this.setState({
       current3: e.key,//更新当前选中的公司信息(科技文献or软件著作权)
@@ -236,107 +258,166 @@ export default class Company extends React.Component {//搜索结果页面
     }
   }
   relationship = () => {
-    var myChart = echarts.init(document.getElementById('relationship'));
     let config = {
       companyName: localStorage.companyName
     }
-    let secondarray = []
-    let thirdarray = []
-    var nodes = []
     this.props.dispatch(getRelationship(toQuery(config))).then(() => {
       let data = this.props.home.EnRelationshipData.data;
-      for (var i in data) {
-        secondarray.push(i)
-        for (var j in data[i]) {
-          thirdarray.push(data[i][j])
-        }
-      }
-      var webkitDep = {
-        "type": "force",
-        "categories": [
-          {
-            "name": "当前公司",
-            "base": "当前公司"
-          },
-          {
-            "name": "当前公司2",
-            "base": "当前公司2"
-          },
-          {
-            "name": "当前公司3",
-            "base": "当前公司3"
-          }
-        ],
-      };
-      nodes[0] = {
-        name: localStorage.companyName,
-        category: 0
-      }
-      let length = thirdarray.length;
-      for (var i = 0; i < secondarray.length; i++) {
-        nodes[i + 1] = {
-          name: secondarray[i],
-          category: 1,
-        }
-      }
-      var index = secondarray.length + 1;
-      for (var i = 0; i < thirdarray.length; i++) {
-        nodes[i + index] = {
-          name: thirdarray[i],
-          category: 2
-        }
-      }
-      var links = []
-      for (var i = 0; i < secondarray.length; i++) {
-        links[i] = {
-          source: 0,
-          target: i + 1
-        }
-      }
-      index = secondarray.length;
-      for (var i = 0; i < thirdarray.length; i++) {
-        for (var j = 0; j < secondarray.length; j++) {
-          links[index + i] = {
-            source: j + 1,
-            target: i + 1 + index
-          }
-        }
-      }
-      var option = {
-        title: { text: '投资图谱' },
-        legend: {
-          data: ['当前公司'],//此处的数据必须和关系网类别中name相对应
-          left: 'right'
-        },
-        series: [{
-          type: 'graph',
-          layout: 'force',
-          animation: false,
-          label: {
-            normal: {
-              show: true,
-              position: 'right'
-            }
-          },
-          edgeSymbolSize: 10,
-          edgeSymbol: ['none', 'arrow'],
-          symbolSize: 25,
-          draggable: true,
-          data: nodes.map(function (node, idx) {
-            node.id = idx;
-            return node;
-          }),
-          categories: webkitDep.categories,
-          force: {
-            edgeLength: 150,
-            repulsion: 100,
-          },
-          edges: links
-        }]
-      };
-      myChart.setOption(option);
+      var nodes = this.GetNodes(data, localStorage.companyName);
+      var links = this.GetLinks(data, localStorage.companyName);
+      this.ForceLayout(nodes, links);
     })
   }
+  GetNodes = (data, str) => {
+    var NodesArray = []
+    var sum = 0;
+    // 构建节点
+    for (let item in data) {
+      let cnt = 0;
+      for (let ChildIndex in data[item]) {
+        cnt++;
+        NodesArray.push({
+          "id": data[item][ChildIndex],
+          "name": data[item][ChildIndex],
+          "category": "二级相关性",
+          "symbolSize": 5
+        })
+      }
+      sum += cnt;
+      NodesArray.push({
+        "id": item,
+        "name": item,
+        "category": "一级相关性",
+        "symbolSize": cnt + 5
+      })
+    }
+    NodesArray.push({
+      "id": str,
+      "name": str,
+      "category": "当前公司",
+      "symbolSize": sum + 5
+    })
+
+    return NodesArray;
+  }
+  GetLinks = (data, str) => {
+    // 构建连线关系
+    var linksArray = [];
+    /*一层节点*/
+    for (let item in data) {
+      linksArray.push({
+        source: str,
+        target: item
+      })
+    }
+    // 外层节点
+    for (let item in data) {
+      for (let ChildIndex in data[item]) {
+        linksArray.push({
+          source: item,
+          target: data[item][ChildIndex]
+        })
+      }
+    }
+
+    return linksArray;
+  }
+  ForceLayout = (nodesData, linksData) => {
+    var dom = document.getElementById("relationship");
+    var myChart = echarts.init(dom);
+    var option = null;
+
+    option = {
+      title: {
+        text: "股权结构",
+        top: "top",
+        left: "left",
+        textStyle: {
+          color: '#292421'
+        }
+      },
+      tooltip: {
+        formatter: '{b}'
+      },
+      backgroundColor: '#FFFFFF',
+      legend: {
+        show: true,
+        data: [{
+          name: '当前公司',
+        },
+        {
+          name: '一级相关',
+        }, {
+          name: '二级相关',
+        }],
+        textStyle: {
+          color: '#292421'
+        },
+        icon: 'circle',
+        // type: 'scroll',
+        // orient: 'horizontal',
+        x: "center",
+        top: 20,
+        bottom: 20,
+        itemWidth: 10,
+        itemHeight: 10
+      },
+
+      animationDuration: 0,
+      animationEasingUpdate: 'quinticInOut',
+      series: [{
+        // name: '知识图谱',
+        type: 'graph',
+        layout: 'force',
+        force: {
+          repulsion: 300,
+          gravity: 0.1,
+          edgeLength: 15,
+          // layoutAnimation: true,
+        },
+        data: nodesData,
+        links: linksData,
+        categories: [
+          {
+            name: '当前公司',
+            symbol: 'circle',
+            label: {
+            }
+          }, {
+            name: '一级相关性',
+            symbol: 'circle'
+          }, {
+            name: '二级相关性',
+            symbol: 'circle'
+          }],
+        roam: true,
+        draggable: true,
+        label: {
+          normal: {
+            show: true,
+            position: 'bottom',
+            formatter: '{b}',
+            fontSize: 10,
+            fontStyle: '600',
+          }
+        },
+        lineStyle: {
+          normal: {
+            opacity: 0.9,
+            width: 1.5,
+            curveness: 0
+          }
+        },
+        edgeSymbolSize: 10,
+        edgeSymbol: ['none', 'arrow']
+      }]
+    };
+
+    if (option && typeof option === "object") {
+      myChart.setOption(option, true);
+    }
+  }
+
   componentDidMount() {
     //初始化调用
     this.getUrl();
@@ -349,13 +430,14 @@ export default class Company extends React.Component {//搜索结果页面
     this.getALLInfo(1, 'patent', config);
     this.fetch('patent');
     //组件装载后时候，注册keypress事件
-    document.addEventListener('keypress', this.handleKeyDown);
+    // document.addEventListener('keypress', this.handleKeyDown);
     localStorage.companyName = inputvalue;
     this.relationship();
+    this.get_InnovationData(config);//创新能力数据
   }
   componentWillUnmount() {
     //组件卸载时候，注销keypress事件
-    document.removeEventListener("keypress", this.handleKeyDown);
+    // document.removeEventListener("keypress", this.handleKeyDown);
     this.mounted = false;
     this.setState = (state, callback) => {
       return;
@@ -374,7 +456,8 @@ export default class Company extends React.Component {//搜索结果页面
 
     if (this.mounted) {//判断组件是否装载完毕
       this.setState({//更新config
-        config: config
+        config: config,
+        inputvalue: inputvalue
       });
     }
     // this.fetch(config);//获取页数
@@ -394,6 +477,41 @@ export default class Company extends React.Component {//搜索结果页面
   };
   onChange = (pageNumber) => {//监听当前分页，点击后回调
     this.getALLInfo(pageNumber, this.state.current3, this.state.config);//改变后获取调用获取公司信息函数
+  }
+  get_InnovationData = (config) => {
+    this.props.dispatch(getEnterprise_literaturenumber(toQuery(config))).then(() => {
+      let data = this.props.home.EnLiteratureNumberData.data;
+      if (this.mounted) {//判断组件是否装载完毕
+        this.setState({
+          literaturenumdata: data
+        });
+      }
+    });
+    this.props.dispatch(getEnterprise_patentnumber(toQuery(config))).then(() => {
+      let data = this.props.home.EnPatentNumberData.data;
+      if (this.mounted) {//判断组件是否装载完毕
+        this.setState({
+          patentnumdata: data
+        });
+      }
+    });
+    this.props.dispatch(getEnterprise_newsnumber(toQuery(config))).then(() => {
+      let data = this.props.home.EnNewsNumberData.data;
+      if (this.mounted) {//判断组件是否装载完毕
+        this.setState({
+          newsnumdata: data
+        });
+      }
+    });
+    this.props.dispatch(getEnterprise_recruitnumber(toQuery(config))).then(() => {
+      let data = this.props.home.EnRecruitNumberData.data;
+      if (this.mounted) {//判断组件是否装载完毕
+        this.setState({
+          recruitnumdata: data
+        });
+      }
+    });
+
   }
   fetch = (current3) => {//获取页数
     let config = this.state.config;
@@ -440,7 +558,9 @@ export default class Company extends React.Component {//搜索结果页面
         });
     }
   };
-
+  gobackbrowser = () => {
+    history.goBack();
+  }
   render() {
     const current3 = this.state.current3;//判断目前是在哪一块
     const Info = () => {
@@ -511,6 +631,11 @@ export default class Company extends React.Component {//搜索结果页面
                   <List.Item.Meta
                     title={item.patent_name}
                   />
+                  {/* <Row>
+                  <Col span={8}>专利号：{item.appli_num}</Col>
+                  <Col span={8}></Col>
+                  <Col span={8}>申请时间{item.appli_time}</Col>
+                  </Row> */}
                   专利号：{item.appli_num}
                 </List.Item>
               )}
@@ -585,127 +710,88 @@ export default class Company extends React.Component {//搜索结果页面
       }
     }
     return (
-      <div className="container-fluid" style={{ minHeight: '800px' }}>
+      <div>
+        <SearchResultHead />
+        <div className="container-fluid" style={{ minHeight: '600px' }}>
 
-        <div className="search_form2" /*style={{ padding: '20px 50px'}}*/>
+          <div className="search_form2" /*style={{ padding: '20px 50px'}}*/>
 
-
-          <div className="top_hd">
-
-            <div className="forms_in2">
-              <input className="form-control2 key_name" type="text" id="keywordId"
-                autoComplete="off" placeholder={this.state.placeholder}
-                onChange={this.InputChange}></input>
-              <input type="submit" className="btn btn-primary sub_btn" value="企业搜索"
-                onClick={this.handleClickSearchBtn}></input>
-            </div>
-
-
-            <div className="search_type cli_types">
-              <ul>
-                {this.state.list.map(//通过读取list二重列表生成搜索的最上层
-                  (item) => (
-                    <li key={item[0]} value={item[2]} data-key={item[3]}
-                      className={this.state.current === item[2] ? 'active' : ''}
-                      onClick={this.handleClickSearchType.bind(this)}><Icon type={item[1]} />{item[0]}
-                    </li>)
-                )}
-              </ul>
-            </div>
-
-            <div className="search_type search_type2" style={{ display: this.state.display }}>
-              <ul>
-                {this.state.list2.map(//通过读取list二重列表生成搜索的第二层
-                  (item) => (
-                    <li key={item[0]} value={item[2]} data-key={item[3]}
-                      className={this.state.current2 === item[2] ? 'active' : ''}
-                      onClick={this.handleClickSearchType2.bind(this)}><Icon type={item[1]} />{item[0]}
-                    </li>)
-                )}
-              </ul>
-            </div>
-
-
-            <div className="search_type search_type2 search_type3" style={{ display: this.state.display2 }}>
-              <ul>
-                {this.state.list3.map(//通过读取list二重列表生成搜索的第二层(区域搜素)
-                  (item) => (
-                    <li key={item} value={item} data-key={item}
-                      className={this.state.current5 === item ? 'active' : ''}
-                      onClick={this.handleClickSearchArea.bind(this)}>{item}
-                    </li>)
-                )}
-              </ul>
-            </div>
-
-            <div className="search_type search_type2" style={{ display: this.state.display3 }}>
-              <ul>
-                {this.state.list4.map(//通过读取list二重列表生成搜索的第二层(行业领域搜素)
-                  (item) => (
-                    <li key={item} value={item} data-key={item}
-                      className={this.state.current4 === item ? 'active' : ''}
-                      onClick={this.handleClickSearchIndustry.bind(this)}>{item}
-                    </li>)
-                )}
-              </ul>
-            </div>
-
-          </div>
-
-          <div>
-            <Row>
-              <Col span={12}>{/* 页面左边 */}
-                <div className="company_top_left">{/*左边上半部分*/}
-                  <div className="company_infos">
-                    <em className="f_img">{this.state.enterprise_search_data.companyName}</em>
-                    <span className="blo">公司名：{this.state.enterprise_search_data.companyName}</span>
-                    <span className="blo">法人：{this.state.enterprise_search_data.legalPerson}</span>
-                    <span className="blo">领域：{this.state.enterprise_search_data.industry}</span>
-                    <span className="blo">公司地址：{this.state.enterprise_search_data.address}</span>
+            <div>
+              <Row>
+                <Col span={12}>{/* 页面左边 */}
+                  <div className="company_top_left">{/*左边上半部分*/}
+                    <div className="companyjumpbar">
+                      <Breadcrumb separator=">">
+                        <Breadcrumb.Item>
+                          <Link to='/'><span>首页</span></Link>
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item onClick={this.gobackbrowser}>
+                          <span>企业评估</span>
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                          <span>{this.state.inputvalue}</span>
+                        </Breadcrumb.Item>
+                      </Breadcrumb>
+                    </div>
+                    <div className="company_infos">
+                      <em className="f_img">{this.state.enterprise_search_data.companyName}</em>
+                      <span className="blo">公司名：{this.state.enterprise_search_data.companyName}</span>
+                      <span className="blo">法人：{this.state.enterprise_search_data.legalPerson}</span>
+                      <span className="blo">领域：{this.state.enterprise_search_data.industry}</span>
+                      <span className="blo">公司地址：{this.state.enterprise_search_data.address}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="left_header">{/*左边下半部分*/}
-                  <Menu
-                    onClick={this.handleClickCompanyMessge}
-                    selectedKeys={[this.state.current3]}
-                    mode="horizontal">
-                    <Menu.Item key="patent">
-                      <Icon type="book" />
-                      专利
+                  <div className="left_header">{/*左边下半部分*/}
+                    <Menu
+                      onClick={this.handleClickCompanyMessge}
+                      selectedKeys={[this.state.current3]}
+                      mode="horizontal">
+                      <Menu.Item key="patent">
+                        <Icon type="book" />
+                        专利
           </Menu.Item>
-                    <Menu.Item key="literature">
-                      <Icon type="switcher" />
-                      科技文献
+                      <Menu.Item key="literature">
+                        <Icon type="switcher" />
+                        科技文献
           </Menu.Item>
-                    <Menu.Item key="copyright">
-                      <Icon type="edit" />
-                      软件著作权
+                      <Menu.Item key="copyright">
+                        <Icon type="edit" />
+                        软件著作权
           </Menu.Item>
-                    <Menu.Item key="news">
-                      <Icon type="message" />
-                      新闻
+                      <Menu.Item key="news">
+                        <Icon type="message" />
+                        新闻
           </Menu.Item>
-                    <Menu.Item key="recruit">
-                      <Icon type="usergroup-add" />
-                      招聘
+                      <Menu.Item key="recruit">
+                        <Icon type="usergroup-add" />
+                        招聘
           </Menu.Item>
-                    <Menu.Item key="bid">
-                      <Icon type="trademark" />
-                      招投标
+                      <Menu.Item key="bid">
+                        <Icon type="trademark" />
+                        招投标
           </Menu.Item>
-                  </Menu>
-                </div>
-                {Info()}
-              </Col>
-              <Col span={12}>{/* 页面右边 */}
-                <div>
-                  <Radar />
-                  <div id="relationship" style={{ width: '100%', height: 300 }}></div>
-                </div>
-              </Col>
-            </Row>
-          </div>
+                    </Menu>
 
+                    {Info()}
+                  </div>
+                </Col>
+                <Col span={12}>{/* 页面右边 */}
+                  <div>
+                    <Radar
+                      literaturedata={this.state.literaturenumdata}
+                      copyrightdata={0}
+                      patentdata={this.state.patentnumdata}
+                      newsdata={this.state.newsnumdata}
+                      recruitdata={this.state.recruitnumdata}
+                      biddata={0}
+                    />
+                    <div id="relationship" style={{ width: '100%', height: 400 }}></div>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+          </div>
         </div>
       </div>
     )

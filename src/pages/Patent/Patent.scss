@@ -1,0 +1,27 @@
+.patent_top_left{
+    height: 40px;
+}
+.zx-content{
+    padding: 0 20px;
+    color: #333;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    vertical-align: middle;
+    display: table; 
+}
+.zx-content table tbody tr td:nth-child(odd) {
+    width: 120px;
+    background: #f5f9ff;
+}
+.zx-conten table tbody tr td:nth-child(even) {
+    width: 250px;
+}
+.zx-content table tbody tr td{
+    border: 1px solid #e5ebf5;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    line-height: 22px;
+    word-break: break-all;
+}

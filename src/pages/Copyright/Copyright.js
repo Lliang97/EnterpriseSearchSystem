@@ -6,12 +6,13 @@ import {
     getEnterprise_softWareQueryByKeyWord,
     getEnterprise_softWareCompanyNumber
 } from '../../actions/getEnterpriseWorkCopyright';
+import { getEnterprise_softWareTypeNumber } from '../../actions/getEnterpriseWorkCopyright';
 import { connect } from 'react-redux';
 import { toQuery } from "../../untils/utils";//封装的请求函数
 
 const columns = [
     {
-        title: '公司名',
+        title: '著作权机构',
         dataIndex: 'companyName',
     },
     {
@@ -33,6 +34,7 @@ export default class Copyright extends React.Component {
             copyrightlisttotal: 0,
             copyrightcompanytotal: 0,
             config: {},
+            PieData: [],
         }
     }
     static childContextTypes = {
@@ -42,6 +44,19 @@ export default class Copyright extends React.Component {
     static contextTypes = {
         router: React.PropTypes.object
     };
+    get_CopyrightPieData = () => {
+        let config = {};
+        config['keyword']=localStorage.copyrightName;
+
+        this.props.dispatch(getEnterprise_softWareTypeNumber(toQuery(config))).then(() => {
+            let data = this.props.home.EnSoftWareTypeNumberData.data;
+            if (this.mounted) {//判断组件是否装载完毕
+                this.setState({
+                    PieData: data,
+                });
+            }
+        });
+    }
     onChangeCopyrightList = (pageNumber) => {
         this.getCopyrightList(pageNumber, this.state.config);
     }
@@ -69,7 +84,7 @@ export default class Copyright extends React.Component {
     }
     get_CopyrihtCompanyNumber = (page = 1, config = {}) => {
         config.start = page;
-        config.rows = 6;//数量为5个
+        config.rows = 5;//数量为5个
         //console.log(config)
         this.props.dispatch(getEnterprise_softWareCompanyNumber(toQuery(config))).then(() => {
             let data = this.props.home.EnSoftWareCompanyNumberData.data;
@@ -120,6 +135,7 @@ export default class Copyright extends React.Component {
         }
         this.getCopyrightList(1, config);
         this.get_CopyrihtCompanyNumber(1, config);
+        this.get_CopyrightPieData();
     }
     render() {
         return (
@@ -154,7 +170,7 @@ export default class Copyright extends React.Component {
                             defaultCurrent={1}//默认在第一页
                             total={this.state.copyrightcompanytotal}//总条数
                         />
-                        <CopyrightPie />
+                        <CopyrightPie PieData={this.state.PieData}/>
                     </Col>
 
                 </Row>

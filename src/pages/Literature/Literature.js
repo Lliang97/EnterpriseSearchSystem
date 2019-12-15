@@ -6,12 +6,13 @@ import {
     getEnterprise_literatureQueryByKeyword,
     getEnterprise_literatureCompanyNumber
 } from '../../actions/getEnterpriseLiterature';
+import { getEnterprise_literaturetypenumber } from '../../actions/getEnterpriseLiterature';
 import { connect } from 'react-redux';
 import { toQuery } from "../../untils/utils";//封装的请求函数
 
 const columns = [
     {
-        title: '公司名',
+        title: '文献机构',
         dataIndex: 'companyName',
     },
     {
@@ -33,6 +34,7 @@ export default class Literature extends React.Component {
             literaturelisttotal: 0,
             literaturecompanytotal: 0,
             config: {},
+            PieData: [],
         }
     }
     static childContextTypes = {
@@ -42,6 +44,19 @@ export default class Literature extends React.Component {
     static contextTypes = {
         router: React.PropTypes.object
     };
+    get_LiteraturePieData = () => {
+        let config = {};
+        config['keyword']=localStorage.patentName;
+
+        this.props.dispatch(getEnterprise_literaturetypenumber(toQuery(config))).then(() => {
+            let data = this.props.home.EnLiteratureTypeNumberData.data;
+            if (this.mounted) {//判断组件是否装载完毕
+                this.setState({
+                    PieData: data,
+                });
+            }
+        });
+    }
     onChangeLiteratureList = (pageNumber) => {
         this.getLiteratureList(pageNumber, this.state.config);
     }
@@ -69,8 +84,8 @@ export default class Literature extends React.Component {
     }
     get_LiteratureCompanyNumber = (page = 1, config = {}) => {
         config.start = page;
-        config.rows = 6;//数量为5个
-        //console.log(config)
+        config.rows = 5;//数量为5个
+        // console.log(config)
         this.props.dispatch(getEnterprise_literatureCompanyNumber(toQuery(config))).then(() => {
             let data = this.props.home.EnLiteratureCompanyNumberData.data;
             let total = this.props.home.EnLiteratureCompanyNumberData.total;
@@ -120,6 +135,7 @@ export default class Literature extends React.Component {
         }
         this.getLiteratureList(1, config);
         this.get_LiteratureCompanyNumber(1, config);
+        this.get_LiteraturePieData();
     }
     render() {
         return (
@@ -156,7 +172,7 @@ export default class Literature extends React.Component {
                             defaultCurrent={1}//默认在第一页
                             total={this.state.literaturecompanytotal}//总条数
                         />
-                        <LiteraturePie />
+                        <LiteraturePie PieData={this.state.PieData}/>
                     </Col>
 
                 </Row>

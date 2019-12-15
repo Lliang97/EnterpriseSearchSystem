@@ -3,21 +3,23 @@ import {Route, IndexRoute } from "react-router";
 import App from "../pages/App";
 import Home from "../pages/Home/Home";
 import Search from "../pages/Search/Search";
+import Search2 from "../pages/Search/Search2";
 import SearchResult from "../pages/SearchResult/SearchResult";
 import Company from "../pages/Company/Company";
 import Patent from "../pages/Patent/Patent";
 import Literature from "../pages/Literature/Literature";
 import Copyright from "../pages/Copyright/Copyright";
+import Property from "../pages/Property/Property";
 import {fillStore} from "../untils/utils";
 
 
 const routes = (
     <Route>
       <Route path="/" component={App}>
-          <IndexRoute component={Home}/>
-          <Route path="/search" component={Search} />
+          <IndexRoute component={Search2}/>
           <Route path="/result" component={SearchResult} />
           <Route path="/company" component={Company} />
+          <Route path="/property" component={Property} />
           <Route path="/patent" component={Patent} />
           <Route path="/literature" component={Literature} />
           <Route path="/copyright" component={Copyright} />

@@ -3,10 +3,10 @@ import {
   Link,
 } from 'react-router';
 import './App.scss';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu ,Divider } from 'antd';
 const { Header, Content, Footer } = Layout;
 import "antd/dist/antd.css";
-import Swust from '../images/swust.png';
+import Logo from '../images/EvaluateLogo.png';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -37,38 +37,12 @@ export default class App extends React.Component {
     return (
       <div className="Dcontainer">
         <Layout>
-          <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-            <div className="headbar">
-              <div className="headflefttbar">
-                <Link to="/"><span className="homelogo" >企业创新能力分析系统</span></Link>
-                <Menu
-                  mode="horizontal"
-                  style={{ lineHeight: '64px' }}
-                >
-                  <Menu.Item key="1"><a href="http://acm.swust.edu.cn/" target="_blank">关于我们</a></Menu.Item>
-                  <Menu.Item key="2"><Link to="/search" >企业搜索</Link></Menu.Item>
-                  <Menu.Item key="3"><a href="http://202.115.161.211:8044/company/#/?_k=41wkik" target="_blank">大数据平台</a></Menu.Item>
-                  {/* <Menu.Item key="4"><Link to="/search" onClick={this.handleTypeSearchBtn}>著作权搜索</Link></Menu.Item> */}
-                </Menu>
-              </div>
-              <a className="corpration" href="http://www.swust.edu.cn/" target="_blank" alt="西南科技大学知识工程实验室">
-                <img className="swustlogo" src={Swust} />
-                <span>战略合作</span>
-              </a>
-              {/* <Menu
-                  mode="horizontal"
-                  className="register"
-                  style={{ lineHeight: '64px' }}
-                >
-                  <Menu.Item key="1">登录</Menu.Item>
-                  <Menu.Item key="2">注册</Menu.Item>
-                </Menu> */}
-            </div>
-          </Header>
+          
+          <Content style={{ padding: '0px', marginTop: 64, background: '#fff', minHeight: 610 }}>
+            {this.props.children}
+            </Content>
 
-          <Content style={{ padding: '0px', marginTop: 64, background: '#fff', minHeight: 610 }}>{this.props.children}</Content>
-
-          <Footer style={{ textAlign: 'center' }}>SWUST Enterprise Search 1.0 <br />
+          <Footer style={{ textAlign: 'center' }}>SWUST Enterprise Evaluate 1.0 <br />
             ©Copyright 2009-2019 西南科技大学 计算机科学与技术学院. All Rights Reserved.<br />
             Design & Develop： 数据与知识工程实验室
           </Footer>

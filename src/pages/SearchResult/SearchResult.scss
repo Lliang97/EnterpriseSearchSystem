@@ -9,54 +9,11 @@
     height: 100px;
     display: block;
     margin: 0 auto; 
-
 }
 .search_forms2{
     float: left;
 }
-.forms_in2{
-    padding-top: 25px;
-    padding-bottom: 15px;
-}
-.top_hd {//表格的样式
-    padding: 20px 0;
-}
-.search_type ul{
-    display: table;
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0
-}
-ol, ul, li {//没有点
-    list-style: none;
-}
-ul, ol {
-    margin-top: 0;
-    margin-bottom: 10px;
-}
 
-.search_type ul li {//每个列表的样式
-    display: table-cell;
-    border: 1px solid #e5e5e5;
-    text-align: center;
-    padding: 6px 0;
-    width: 14.285%;
-    background-color: #f2f2f2;
-    vertical-align: middle;
-    color: #666;
-    cursor: pointer;
-}
-.search_type.cli_types ul li:nth-child(1).active {//列表active样式
-    background-color: #fff;
-    border: 1px solid #e5e5e5;
-    border-bottom: none;
-    color: #0F63A8;
-}
-.search_type ul li.active {//列表active样式
-    color: #fff;
-    background-color: #0F63A8;
-    border: 1px solid #0F63A8;
-}
 .search_type2 {//子列表样式
     padding-top: 0px;
     position: relative;
@@ -72,45 +29,7 @@ ul, ol {
     position: relative;
     border: none;
 }
-.form-control2 {//搜索框样式
-    padding: 6px 20px;
-    height: 45px;
-    // display: inline-block;
-    width: 95%;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: #555;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-}
-.search_form2 .forms_in2 input[type='submit'] {
-    width: 5%;
-    height: 45px;
-    padding: 0px 0px;
-}
-.btn-primary {//按钮样式
-    display: inline-block;
-    color: #fff;
-    background-color: #428bca;
-    border-color: #357ebd;
-}
-.btn {//按钮样式
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
+
 .hot_key{//热搜样式
     padding: 40px 0 200px 0;
     text-align: center;
@@ -132,3 +51,91 @@ a, a:FOCUS {//热搜a标签样式
     z-index: 20;
     box-shadow: 5px 5px 5px 5px #ccc;
 }
+.hint_text{
+    margin-top: 47px;
+    line-height: 42px;
+}
+.nums_text{
+    vertical-align: middle;
+    line-height: 20px;
+    font-size: 18px;
+    color: #999;
+}
+.title{
+    font-size: 18px;
+    line-height: 1.29;
+    font-weight: 700;
+    color: #333;
+}
+.ant-divider-horizontal{
+    margin: 12px 0;
+}
+
+.Result_page_left_header .ant-radio-button-wrapper{
+    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.Result_page_left_header .ant-tabs{
+    margin-bottom: 10px;
+}
+.jumpbar a{//跳转栏css
+    font-size: 18px;
+    line-height: 20px;
+}
+.jumpbar{
+    .ant-breadcrumb{
+        padding: 20px 15px 5px;
+    }
+}
+.cardStyle .ant-card{//创新能力值卡片
+    font-size: 3px;
+    line-height: 1;
+    background: #1890ff;
+    color: #ffff;
+}
+.cardStyle {
+    p{
+        margin-bottom: 0em;
+    }
+}
+.cardStyle .ant-card-head-title{
+    text-align: center;
+}
+.ant-card-body{
+    text-align: center;
+    padding: 0px;
+}
+.companyListStyle{
+    .ant-list-item-meta-title{
+        font-size: 18px;
+        height: 40px;
+        font-weight: 700;
+    }
+}
+.fundStlye{
+    margin-left: 10px;
+}
+.areaStlye{
+    margin-left: 10px;
+}
+.companyListStyle {
+    .ant-list-item{
+        padding: 5px 0; 
+        padding-right: 20px;
+        padding-left: 24px;
+    }
+}
+.companyListStyle{
+    .ant-card-head{
+        padding: 0 12px;
+        color: #fff;
+        font-size: 20px;
+        border-bottom: 0px;
+    }
+}
+.keyword {//关键字变红
+    color: #e33244;
+    font-weight: bold;
+  }

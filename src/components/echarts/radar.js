@@ -10,50 +10,84 @@ import 'echarts/lib/component/markLine';
 
 
 export default class Radar extends React.Component {
-  componentDidMount() {
-    // 初始化
-    var myChart = echarts.init(document.getElementById('radar'));
-    // 绘制图表
-    myChart.setOption({
-        title: {
-            text: '创新能力数据'
-        },
-        tooltip: {},
-        radar: {
-            // shape: 'circle',
-            name: {
-                textStyle: {
-                    color: '#fff',
-                    backgroundColor: '#999',
-                    borderRadius: 3,
-                    padding: [3, 5]
-               }
+    constructor() {
+        super();
+        this.state = {
+        }
+    }
+    static childContextTypes = {
+        location: React.PropTypes.object,
+        route: React.PropTypes.object
+    };
+    static contextTypes = {
+        router: React.PropTypes.object
+    };
+    initRader = () => {
+        const topicName = [], opinionNum = [];
+        this.convert(topicName, opinionNum);
+        let myChart = echarts.init(this.refs.radar);
+        let option = this.setPieOption(topicName, opinionNum);
+        myChart.setOption(option);
+        window.onresize = myChart.resize;
+    }
+    convert(topicName,opinionNum){//数据处理
+        const literaturedata=this.props.literaturedata;
+        const copyrightdata=this.props.copyrightdata;
+        const patentdata=this.props.patentdata;
+        const newsdata=this.props.newsdata;
+        const recruitdata=this.props.recruitdata;
+        const biddata=this.props.biddata;
+        opinionNum.push(literaturedata,copyrightdata,patentdata,newsdata,recruitdata,biddata);
+    }
+    setPieOption = (topicName, opinionNum) => {
+        return {
+            title: {
+                text: '创新能力数据'
             },
-            indicator: [
-               { name: '科技文献', max: 100},
-               { name: '软件著作权', max: 100},
-               { name: '专利', max: 100},
-               { name: '新闻', max: 100},
-               { name: '招聘', max: 100},
-               { name: '招投标', max: 100}
-            ]
-        },
-        series: [{
-            name: '创新能力数据',
-            type: 'radar',
-            // areaStyle: {normal: {}},
-            data : [
-                {
-                    value : [80, 60, 50, 20, 70, 30],
-                    name : '创新能力数据'
-                }
-            ]
-        }]
-    });
+            tooltip: {},
+            radar: {
+                // shape: 'circle',
+                name: {
+                    textStyle: {
+                        color: '#fff',
+                        backgroundColor: '#999',
+                        borderRadius: 2,
+                        padding: [3, 5]
+                   }
+                },
+                indicator: [
+                   { name: '科技文献'},
+                   { name: '软件著作权',},
+                   { name: '专利'},
+                   { name: '新闻'},
+                   { name: '招聘'},
+                   { name: '招投标'}
+                ]
+            },
+            series: [{
+                name: '创新能力数据',
+                type: 'radar',
+                // areaStyle: {normal: {}},
+                data : [
+                    {
+                        value : opinionNum,
+                        name : '创新能力数据'
+                    }
+                ]
+            }]
+        }
+    };
+    componentDidUpdate(){
+		echarts.dispose(this.refs.radar);
+		this.initRader();
+	}
+    componentDidMount() {
+        this.initRader();
+        // 初始化
     }
     render() {
         return (
-            <div id="radar" style={{ width: '100%', height: 300 }}></div>
+            <div ref="radar" style={{ width: '100%', height: 250 }}></div>
         );
     }
 }

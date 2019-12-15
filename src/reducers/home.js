@@ -25,6 +25,11 @@ const {
   GET_ENTERPRISE_SOFTWAREQUERYBYKEYWORD_SUCCESS,//关键字模糊查询软著
   GET_ENTERPRISE_SOFTWARECOMPANYNUMBER_SUCCESS,//关键字查询公司拥有的软著及数量
   GET_ENTERPRISE_SOFTWARETYPENUMBER_SUCCESS,//统计关键字所关联的著作权的类型及数量
+
+  GET_ENTERPRISE_INDUSTRYDISTRIBUTION_SUCCESS,//查询行业分布
+  GET_ENTERPRISE_CITYDISTRIBUTION_SUCCESS,//查询地区分布
+
+  GET_STATICDATA_SUCCESS,//查询系统所有数据,包括公司数量，文献，专利，招聘，新闻
 } = actions;
 
 export default (state = {}, action) => {
@@ -133,6 +138,21 @@ export default (state = {}, action) => {
         return {
           ...state,
           EnSoftWareTypeNumberData: action.data
+        };
+        case GET_ENTERPRISE_INDUSTRYDISTRIBUTION_SUCCESS://查询行业分布，哪些行业以及行业数量
+        return {
+          ...state,
+          EnIndustryDistriButionData: action.data
+        };
+        case GET_ENTERPRISE_CITYDISTRIBUTION_SUCCESS://查询地区分布，哪些地区以及地区数量
+        return {
+          ...state,
+          EnCityDistributionData: action.data
+        };
+        case GET_STATICDATA_SUCCESS://查询系统所有数据,包括公司数量，文献，专利，招聘，新闻
+        return {
+          ...state,
+          EnSystemStaticData: action.data
         };
         default:
             return state;

@@ -1,0 +1,67 @@
+.homelogo {//公司图标样式
+    width: 300px;
+    height: 64px;
+    margin: 16px 24px 16px 0;
+    float: left;
+    display: block;
+    margin: 0 auto;
+    color: #080808; 
+    text-decoration: none;
+    font-size: 23px;
+    font-style: normal;
+}
+.corpration {//战略合作样式
+    position: absolute;
+    top: 0px;
+    right: 200px;
+    color: black;
+    font-size: 16px;
+}
+.evaluatelogo{//swust图标样式
+    width: 40px;
+    height: 40px;
+    position: relative;
+    float: left;
+    top: 13px;
+    margin:0 10px;
+}
+.input_group{
+    position: relative;
+    display: table;
+    height: 64px;
+}
+// .input_group input[type='submit'] {
+//     width: 10%;
+//     height: 34px;
+//     padding: 0px 0px;
+// }
+.result_input {//搜索框样式
+    padding: 6px 15px;
+    height: 34px;
+    width: 375px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.result_btn {//按钮样式
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    height: 34px;
+    text-align: center;
+    cursor: pointer;
+    color: #fff;
+    background-color: #128bed;
+    border-color: #128bed;
+}
+.headbar{
+    .ant-divider-horizontal{
+        margin: 0px 0;
+    }
+}
