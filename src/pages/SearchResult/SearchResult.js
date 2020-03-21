@@ -274,6 +274,9 @@ export default class SearchResult extends React.Component {//搜索结果页面
       this.getEnterprise_searchCityDistributionData(addConfig);
     }
   }
+  handleCompanyResultLinkClick = (e) =>{
+    localStorage.Linkfromstage = '企业评估';
+  }
   render() {
     return (
       <div>
@@ -329,7 +332,9 @@ export default class SearchResult extends React.Component {//搜索结果页面
                 // pagination= 
                 renderItem={item => (
                   <div className='companyListStyle'>
-                    <Link to={{ pathname: '/company', query: { companyName: item.companyName } }}>{/*根据选择的公司名跳转 */}
+                    <Link onClick={this.handleCompanyResultLinkClick} 
+                    to={{ pathname: '/company', query: {companyName: item.companyName }} 
+                  }>{/*根据选择的公司名跳转 */}
                       <List.Item>
                         <List.Item.Meta
                           title={item.companyName}
@@ -350,12 +355,14 @@ export default class SearchResult extends React.Component {//搜索结果页面
                   </div>
                 )}
               />
+              <div className='resultPagination'>
               <Pagination
                 showQuickJumper
                 onChange={this.onChange}//监听改变，回调函数
                 defaultCurrent={1}//默认在第一页
                 total={this.state.total}//总条数
               />
+              </div>
             </Col>
             <Col span={12}>
               <div className="bottomRight">

@@ -1,11 +1,11 @@
 .company_top_left {//企业框架
     padding: 0 0;
-    height: 150px;
+    height: 220px;
 }
 .company_top_left .company_infos{//企业框架
     padding-left: 151px;
     position: relative;
-    margin: 20px 0;
+    margin: 40px 0;
 }
 .company_top_left .company_infos em.f_img {//调整图像
     width: 100px;
@@ -35,7 +35,7 @@ i, em {//调整em的字体
 }
 .companyjumpbar{
     .ant-breadcrumb {
-        padding: 5px 15px 5px;
+        padding: 20px 15px 5px;
         color: rgba(0, 0, 0, 0.45) !important; 
         font-size: 18px;
         line-height: 20px;
@@ -44,8 +44,14 @@ i, em {//调整em的字体
 .companyjumpbar{
 .ant-breadcrumb > span:last-child {
     color: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
 }
 }
 .left_header{
     margin: 20px 0;
+}
+.left_header{
+    .ant-pagination{
+        margin: 20px 0;
+    }
 }

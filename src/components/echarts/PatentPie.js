@@ -115,7 +115,7 @@ export default class PatentPie extends React.Component {
     render() {
         return (
             <div>
-                <div ref="PATEANTPIE"  style={{width: "100%", height: 400}}></div> 
+                <div ref="PATEANTPIE"  style={{width: "100%", height: 400,top: 20}}></div> 
             </div>
         );
     }

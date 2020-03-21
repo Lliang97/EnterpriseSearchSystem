@@ -53,7 +53,7 @@ export default class Relationship extends React.Component {
     }
     render() {
         return (
-            <div id="relationship" style={{ width: '100%', height: 300 }}></div>
+            <div id="relationship" style={{ width: '100%', height: 200 }}></div>
         );
     }
 }

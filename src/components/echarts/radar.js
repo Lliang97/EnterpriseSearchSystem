@@ -23,14 +23,15 @@ export default class Radar extends React.Component {
         router: React.PropTypes.object
     };
     initRader = () => {
-        const topicName = [], opinionNum = [];
-        this.convert(topicName, opinionNum);
+        const opinionNum = [];
+        let maxValue;
+        this.convert(maxValue, opinionNum);
         let myChart = echarts.init(this.refs.radar);
-        let option = this.setPieOption(topicName, opinionNum);
+        let option = this.setPieOption(maxValue, opinionNum);
         myChart.setOption(option);
         window.onresize = myChart.resize;
     }
-    convert(topicName,opinionNum){//数据处理
+    convert(maxValue,opinionNum){//数据处理
         const literaturedata=this.props.literaturedata;
         const copyrightdata=this.props.copyrightdata;
         const patentdata=this.props.patentdata;
@@ -38,8 +39,10 @@ export default class Radar extends React.Component {
         const recruitdata=this.props.recruitdata;
         const biddata=this.props.biddata;
         opinionNum.push(literaturedata,copyrightdata,patentdata,newsdata,recruitdata,biddata);
+        maxValue = Math.max(...opinionNum);
+        console.log(maxValue);
     }
-    setPieOption = (topicName, opinionNum) => {
+    setPieOption = (maxValue, opinionNum) => {
         return {
             title: {
                 text: '创新能力数据'
@@ -56,12 +59,12 @@ export default class Radar extends React.Component {
                    }
                 },
                 indicator: [
-                   { name: '科技文献'},
-                   { name: '软件著作权',},
-                   { name: '专利'},
-                   { name: '新闻'},
-                   { name: '招聘'},
-                   { name: '招投标'}
+                   { name: '科技文献', max: opinionNum[0] + 20},
+                   { name: '软件著作权', max: opinionNum[1] + 20},
+                   { name: '专利', max: opinionNum[2] + 20},
+                   { name: '新闻', max: opinionNum[3] + 20},
+                   { name: '招聘', max: opinionNum[4] + 20},
+                   { name: '招投标',max: opinionNum[5] + 20}
                 ]
             },
             series: [{

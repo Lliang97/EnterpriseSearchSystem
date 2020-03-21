@@ -24,10 +24,12 @@ import {
 } from '../../actions/getEnterpriseRecruit';
 import { getRelationship } from '../../actions/getEnterpriseInfo';
 import { getEnterprise_copyright } from '../../actions/getEnterpriseWorkCopyright';
+import { getEnterprise_wordcloud } from '../../actions/getEnterpriseWordCloud';
 import { List, Menu, Pagination, Icon, Row, Col, Breadcrumb } from 'antd';
 import Radar from '../../components/echarts/radar.js';
 import echarts from 'echarts/lib/echarts';
 import SearchResultHead from '../HeadComponent/SearchResultHead.js'
+import CompanyPatentWorldCloud from '../../components/echarts/CompanyPatentWorldCloud';
 import 'echarts/lib/chart/graph';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
@@ -76,6 +78,7 @@ export default class Company extends React.Component {//搜索结果页面
       companyName: "",//公司名
       buttonValue: '企业搜索',
       innovation_data: [],//创新能力数据
+      enterprise_wordcloud_data: [],//词云数据
     }
   };
   static childContextTypes = {
@@ -195,12 +198,13 @@ export default class Company extends React.Component {//搜索结果页面
   //     this.handleClickSearchBtn()
   //   }
   // }
-  handleClickCompanyMessge = (e) => {//点击查看公司的科技文献等
+  handleClickCompanyMessge = (e) => {//点击查看公司的科技文献、专利、著作权等
     this.setState({
       current3: e.key,//更新当前选中的公司信息(科技文献or软件著作权)
     });
     this.fetch(e.key);//获取页数
     this.getALLInfo(1, e.key, this.state.config);//调用获取参数
+    this.getWordCloudData(e.key,localStorage.companyName);//词云
   }
   getALLInfo = (page = 1, key, config = {}) => {
     config.start = page;
@@ -432,8 +436,9 @@ export default class Company extends React.Component {//搜索结果页面
     //组件装载后时候，注册keypress事件
     // document.addEventListener('keypress', this.handleKeyDown);
     localStorage.companyName = inputvalue;
-    this.relationship();
+    this.relationship();//投资图谱
     this.get_InnovationData(config);//创新能力数据
+    this.getWordCloudData('patent',localStorage.companyName);//词云
   }
   componentWillUnmount() {
     //组件卸载时候，注销keypress事件
@@ -557,6 +562,19 @@ export default class Company extends React.Component {//搜索结果页面
           total: 0
         });
     }
+  };
+  getWordCloudData = (key,companyName) => {//获取企业词云
+    let config = []
+    config["key"] = key;
+    config["companyName"] = companyName;
+    this.props.dispatch(getEnterprise_wordcloud(toQuery(config))).then(() => {
+      let data = this.props.home.EnWordCloudData.data
+      if (this.mounted) {//判断组件是否装载完毕
+        this.setState({
+          enterprise_wordcloud_data: data
+        });
+      }
+    });
   };
   gobackbrowser = () => {
     history.goBack();
@@ -726,7 +744,7 @@ export default class Company extends React.Component {//搜索结果页面
                           <Link to='/'><span>首页</span></Link>
                         </Breadcrumb.Item>
                         <Breadcrumb.Item onClick={this.gobackbrowser}>
-                          <span>企业评估</span>
+                          <span>{localStorage.Linkfromstage}</span>
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>
                           <span>{this.state.inputvalue}</span>
@@ -785,7 +803,11 @@ export default class Company extends React.Component {//搜索结果页面
                       recruitdata={this.state.recruitnumdata}
                       biddata={0}
                     />
-                    <div id="relationship" style={{ width: '100%', height: 400 }}></div>
+                    <div style={{ width: '100%', height: 250 }}>
+                      <CompanyPatentWorldCloud wordclouddata={this.state.enterprise_wordcloud_data}/>
+                    </div>
+                    <div id="relationship" style={{ width: '100%', height: 250 }}></div>
+
                   </div>
                 </Col>
               </Row>

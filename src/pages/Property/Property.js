@@ -338,6 +338,9 @@ export default class Property extends React.Component {
             this.Initfunction();
         }
     }
+    handlePropertyResultLinkClick = (e) =>{
+        localStorage.Linkfromstage = '知识产权';
+    }
     render() {
         const PropertyList = () => {
             if (this.state.currentstate == 'patent') {
@@ -431,7 +434,9 @@ export default class Property extends React.Component {
                         <Table columns={Patentcolumns} dataSource={this.state.patentcompanynumber_data} size="middle" pagination={false} 
                         onRow={record => {return {
                             onClick: event => {
-                                this.context.router.push(`/company?companyName=${record.companyName}`);}, // 点击行
+                                this.context.router.push(`/company?companyName=${record.companyName}`);
+                                this.handlePropertyResultLinkClick()
+                            }, // 点击行
                           };
                         }}/>
                         <Pagination
@@ -524,7 +529,7 @@ export default class Property extends React.Component {
                                                 <Link to='/'>首页</Link>
                                             </Breadcrumb.Item>
                                             <Breadcrumb.Item>
-                                                <Link to={{ pathname: '/property', query: { key: this.state.keyword } }}>知识产权</Link>
+                                                <Link  to={{ pathname: '/property', query: { key: this.state.keyword } }}>知识产权</Link>
                                             </Breadcrumb.Item>
                                         </Breadcrumb>
                                     </div>

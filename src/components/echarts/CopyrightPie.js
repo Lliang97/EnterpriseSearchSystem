@@ -109,7 +109,7 @@ export default class CopyrightPie extends React.Component {
     render() {
         return (
             <div>
-                <div ref="COPYRIGHTPIE"  style={{width: "100%", height: 400}}></div>
+                <div ref="COPYRIGHTPIE"  style={{width: "100%", height: 400,top: 20}}></div>
             </div>
         );
     }
