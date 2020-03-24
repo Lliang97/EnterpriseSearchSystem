@@ -87,6 +87,14 @@ a, a:FOCUS {//热搜a标签样式
 .jumpbar{
     .ant-breadcrumb{
         padding: 20px 15px 5px;
+        font-size: 18px;
+        line-height: 20px;
+        color: #222;
+        font-weight: 600;
+    }
+    a{
+        color: #222;
+        font-weight: 600;
     }
 }
 .cardStyle .ant-card{//创新能力值卡片

@@ -36,14 +36,19 @@ i, em {//调整em的字体
 .companyjumpbar{
     .ant-breadcrumb {
         padding: 20px 15px 5px;
-        color: rgba(0, 0, 0, 0.45) !important; 
         font-size: 18px;
         line-height: 20px;
+        color: #222;
+        font-weight: 600;
+    }
+    a{
+        color: #222;
+        font-weight: 600;
     }
 }
 .companyjumpbar{
 .ant-breadcrumb > span:last-child {
-    color: rgba(0, 0, 0, 0.45);
+    color: #222;
     cursor: pointer;
 }
 }

@@ -32,6 +32,8 @@ const {
   GET_STATICDATA_SUCCESS,//查询系统所有数据,包括公司数量，文献，专利，招聘，新闻
 
   GET_ENTERPRISE_WORDCLOUD_SUCCESS,//查询公司文献，专利，招聘，新闻词云
+
+  GET_ENTERPRISE_PATENTSPECIFICINFO_SUCCESS,//查询专利具体的信息
 } = actions;
 
 export default (state = {}, action) => {
@@ -160,6 +162,11 @@ export default (state = {}, action) => {
         return {
           ...state,
           EnWordCloudData: action.data
+        };
+        case GET_ENTERPRISE_PATENTSPECIFICINFO_SUCCESS://查询专利具体的信息
+        return {
+          ...state,
+          EnPatentSpecificData: action.data
         };
         default:
             return state;

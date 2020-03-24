@@ -50,5 +50,7 @@ export default keyMirror({
     GET_STATICDATA_SUCCESS: null,//查询系统所有数据,包括公司数量，文献，专利，招聘，新闻
     GET_STATICDATA_FALURE: null,
     GET_ENTERPRISE_WORDCLOUD_SUCCESS: null,//查询公司文献，专利，招聘，新闻词云
-	GET_ENTERPRISE_WORDCLOUD_FAILURE: null,
+    GET_ENTERPRISE_WORDCLOUD_FAILURE: null,
+    GET_ENTERPRISE_PATENTSPECIFICINFO_SUCCESS: null,//查询专利具体的信息
+    GET_ENTERPRISE_PATENTSPECIFICINFO_FAILURE: null,
 });

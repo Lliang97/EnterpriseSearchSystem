@@ -204,7 +204,7 @@ export default class Company extends React.Component {//搜索结果页面
     });
     this.fetch(e.key);//获取页数
     this.getALLInfo(1, e.key, this.state.config);//调用获取参数
-    this.getWordCloudData(e.key,localStorage.companyName);//词云
+    this.getWordCloudData(e.key, localStorage.companyName);//词云
   }
   getALLInfo = (page = 1, key, config = {}) => {
     config.start = page;
@@ -438,7 +438,7 @@ export default class Company extends React.Component {//搜索结果页面
     localStorage.companyName = inputvalue;
     this.relationship();//投资图谱
     this.get_InnovationData(config);//创新能力数据
-    this.getWordCloudData('patent',localStorage.companyName);//词云
+    this.getWordCloudData('patent', localStorage.companyName);//词云
   }
   componentWillUnmount() {
     //组件卸载时候，注销keypress事件
@@ -563,7 +563,7 @@ export default class Company extends React.Component {//搜索结果页面
         });
     }
   };
-  getWordCloudData = (key,companyName) => {//获取企业词云
+  getWordCloudData = (key, companyName) => {//获取企业词云
     let config = []
     config["key"] = key;
     config["companyName"] = companyName;
@@ -596,7 +596,7 @@ export default class Company extends React.Component {//搜索结果页面
                   <List.Item.Meta
                     title={item.document_name} />
                   {item.author} - 《{item.source}》
-           </List.Item>
+                </List.Item>
               )}
             />
             <Pagination
@@ -644,18 +644,22 @@ export default class Company extends React.Component {//搜索结果页面
               dataSource={this.state.allinfo_data}
               // pagination= 
               renderItem={item => (
+                <Link onClick={event => {
+                  this.context.router.push(`/patent?key=${item.patent_name}`);
+                }} >
+                  <List.Item>
+                    <List.Item.Meta
+                      title={item.patent_name}
+                    />
 
-                <List.Item>
-                  <List.Item.Meta
-                    title={item.patent_name}
-                  />
-                  {/* <Row>
+                    {/* <Row>
                   <Col span={8}>专利号：{item.appli_num}</Col>
                   <Col span={8}></Col>
                   <Col span={8}>申请时间{item.appli_time}</Col>
                   </Row> */}
                   专利号：{item.appli_num}
-                </List.Item>
+                  </List.Item>
+                </Link>
               )}
             />
             <Pagination
@@ -744,7 +748,7 @@ export default class Company extends React.Component {//搜索结果页面
                           <Link to='/'><span>首页</span></Link>
                         </Breadcrumb.Item>
                         <Breadcrumb.Item onClick={this.gobackbrowser}>
-                          <span>{localStorage.Linkfromstage}</span>
+                          <span style={{ cursor: 'pointer' }}>{localStorage.Linkfromstage}</span>
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>
                           <span>{this.state.inputvalue}</span>
@@ -804,7 +808,7 @@ export default class Company extends React.Component {//搜索结果页面
                       biddata={0}
                     />
                     <div style={{ width: '100%', height: 250 }}>
-                      <CompanyPatentWorldCloud wordclouddata={this.state.enterprise_wordcloud_data}/>
+                      <CompanyPatentWorldCloud wordclouddata={this.state.enterprise_wordcloud_data} />
                     </div>
                     <div id="relationship" style={{ width: '100%', height: 250 }}></div>
 

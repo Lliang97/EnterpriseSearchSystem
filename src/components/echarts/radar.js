@@ -40,7 +40,6 @@ export default class Radar extends React.Component {
         const biddata=this.props.biddata;
         opinionNum.push(literaturedata,copyrightdata,patentdata,newsdata,recruitdata,biddata);
         maxValue = Math.max(...opinionNum);
-        console.log(maxValue);
     }
     setPieOption = (maxValue, opinionNum) => {
         return {

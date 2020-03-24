@@ -4,6 +4,7 @@
 .zx-content{
     padding: 0 10px;
     color: #333;
+    font-size: 15px;
 }
 table {
     border-collapse: collapse;
@@ -22,6 +23,44 @@ table {
     border: 1px solid #e5ebf5;
     box-sizing: border-box;
     padding: 12px 14px;
-    line-height: 22px;
+    line-height: 50px;
     word-break: break-all;
 }
+.hindText{//隐藏字
+   max-width: 435px;
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   float: left;
+}
+.patentDetail{
+    display: inline-block;
+}
+.ant-modal-footer{
+    .ant-btn {
+        width: 15% ;
+    }
+}
+.relativetitle{
+    padding: 20px 15px 5px;
+    font-size: 18px;
+    line-height: 20px;
+    color: #222;
+    font-weight: 600;
+    p{
+        margin-bottom: 0.8em;
+    }
+}
+.demo-infinite-container{
+   border: 1px solid #e8e8e8;
+   border-radius: 4px;
+   overflow: auto;
+   padding: 8px 24px;
+   height: 280px;
+}
+.demo-loading-container {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+  }

@@ -13,6 +13,8 @@ const {
 	GET_ENTERPRISE_PATENTTYPENUMBER_FAILURE,
 	GET_ENTERPRISE_PATENTCOMPANYNUMBER_SUCCESS,//关键字查询公司拥有的专利及数量
 	GET_ENTERPRISE_PATENTCOMPANYNUMBER_FAILURE,
+	GET_ENTERPRISE_PATENTSPECIFICINFO_SUCCESS,//查询专利具体的信息
+	GET_ENTERPRISE_PATENTSPECIFICINFO_FAILURE,
 } = actions;
 const baseUrl = configs.baseUrl;
 export function getEnterprise_patent(query = '') {
@@ -91,6 +93,22 @@ export function getEnterprise_patentcompanynumber(query = '') {
 			dispatch({
 				type: GET_ENTERPRISE_PATENTCOMPANYNUMBER_FAILURE,
 				error: new Error('关键字查询公司拥有的专利及数量, 请稍后再试')
+			});
+		}
+	};
+};
+export function getEnterprise_patentSpecificInfo(query = '') {
+	return async(dispatch) => {
+		try {
+			const data = (await axios.get(`${baseUrl}patent/query.do${query}`)).data;
+			dispatch({
+				type: GET_ENTERPRISE_PATENTSPECIFICINFO_SUCCESS,
+				data: data
+			});
+		} catch (error) {
+			dispatch({
+				type: GET_ENTERPRISE_PATENTSPECIFICINFO_FAILURE,
+				error: new Error('查询专利具体的信息, 请稍后再试')
 			});
 		}
 	};

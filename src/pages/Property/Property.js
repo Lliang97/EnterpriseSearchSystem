@@ -26,7 +26,7 @@ import {
 import { connect } from 'react-redux';
 import { toQuery } from "../../untils/utils";//封装的请求函数
 import SearchPropertyHead from '../HeadComponent/SearchPropertyHead.js';
-import {createHashHistory} from 'history'; //做返回
+import { createHashHistory } from 'history'; //做返回
 const history = createHashHistory();
 //history.goBack();
 const { TabPane } = Tabs;
@@ -90,7 +90,7 @@ export default class Property extends React.Component {
     }
     get_PatentPieData = () => {//专利分布饼图数据
         let config = {};
-        config['keyword'] = localStorage.patentName;
+        config['keyword'] = localStorage.propertyName;
         this.props.dispatch(getEnterprise_patenttypenumber(toQuery(config))).then(() => {
             let data = this.props.home.EnPatentTypeNumberData.data;
             if (this.mounted) {//判断组件是否装载完毕
@@ -102,7 +102,7 @@ export default class Property extends React.Component {
     }
     get_LiteraturePieData = () => {//文献分布饼图数据
         let config = {};
-        config['keyword'] = localStorage.patentName;
+        config['keyword'] = localStorage.propertyName;
         this.props.dispatch(getEnterprise_literaturetypenumber(toQuery(config))).then(() => {
             let data = this.props.home.EnLiteratureTypeNumberData.data;
             if (this.mounted) {//判断组件是否装载完毕
@@ -114,7 +114,7 @@ export default class Property extends React.Component {
     }
     get_CopyrightPieData = () => {//著作权饼图数据
         let config = {};
-        config['keyword'] = localStorage.copyrightName;
+        config['keyword'] = localStorage.propertyName;
         this.props.dispatch(getEnterprise_softWareTypeNumber(toQuery(config))).then(() => {
             let data = this.props.home.EnSoftWareTypeNumberData.data;
             if (this.mounted) {//判断组件是否装载完毕
@@ -301,12 +301,12 @@ export default class Property extends React.Component {
         this.Initfunction();
     }
     Initfunction = () => {
-        let url = this.props.location.search;//获得目前路由的后缀，比如，?patentName=小米
+        let url = this.props.location.search;//获得目前路由的后缀，比如，?key=一种
         url = decodeURIComponent(url);//解码
-        let inputvalue = url.substring(url.indexOf("=") + 1);//输入的查询值，比如，电力
+        let inputvalue = url.substring(url.indexOf("=") + 1);//输入的查询值，比如，一种
         let config = {}//要传入到接口的参数
         config['keyword'] = inputvalue;//将tpye以变量的方式存进config对象中
-        localStorage.patentName = inputvalue;
+        localStorage.propertyName = inputvalue;
         if (this.mounted) {//判断组件是否装载完毕
             this.setState({
                 keyword: inputvalue,
@@ -334,11 +334,15 @@ export default class Property extends React.Component {
         let url = this.props.location.search;//获得目前路由的后缀，比如，?key=小米
         url = decodeURIComponent(url);//url解码
         let inputvalue = url.substring(url.indexOf("=") + 1);//输入的查询值，比如，小米
+        //console.log(inputvalue)
         if (inputvalue != this.state.keyword) {
+            this.setState({//更新config
+                keyword: inputvalue
+            })
             this.Initfunction();
         }
     }
-    handlePropertyResultLinkClick = (e) =>{
+    handlePropertyResultLinkClick = (e) => {
         localStorage.Linkfromstage = '知识产权';
     }
     render() {
@@ -346,20 +350,20 @@ export default class Property extends React.Component {
             if (this.state.currentstate == 'patent') {
                 return (
                     <div>
-                        
+
                         <List
                             itemLayout="horizontal"
                             bordered='true'
                             dataSource={this.state.patentlist_data}
                             renderItem={item => (
                                 <Link to={{ pathname: '/patent', query: { key: item.patent_name } }}>{/*根据选择的公司名跳转 */}
-                                <List.Item>
-                                    <List.Item.Meta
-                                        title={item.patent_name}
-                                    />
-                                    {item.companyName}
-                                    <span style={{ float: 'right' }}>{item.public_time}</span>
-                                </List.Item>
+                                    <List.Item>
+                                        <List.Item.Meta
+                                            title={item.patent_name}
+                                        />
+                                        {item.companyName}
+                                        <span style={{ float: 'right' }}>{item.public_time}</span>
+                                    </List.Item>
                                 </Link>
                             )}
                         />
@@ -383,9 +387,7 @@ export default class Property extends React.Component {
                                 <List.Item>
                                     <List.Item.Meta
                                     />
-                                    <div>
-                                        《{item.document_name}》
-                                    </div>
+                                    《{item.document_name}》
                                     {item.companyName}
                                     <span style={{ float: 'right' }}>{item.public_time}</span>
                                 </List.Item>
@@ -431,14 +433,15 @@ export default class Property extends React.Component {
             if (this.state.currentstate == 'patent') {
                 return (
                     <div>
-                        <Table columns={Patentcolumns} dataSource={this.state.patentcompanynumber_data} size="middle" pagination={false} 
-                        onRow={record => {return {
-                            onClick: event => {
-                                this.context.router.push(`/company?companyName=${record.companyName}`);
-                                this.handlePropertyResultLinkClick()
-                            }, // 点击行
-                          };
-                        }}/>
+                        <Table columns={Patentcolumns} dataSource={this.state.patentcompanynumber_data} size="middle" pagination={false}
+                            onRow={record => {
+                                return {
+                                    onClick: event => {
+                                        this.context.router.push(`/company?companyName=${record.companyName}`);
+                                        this.handlePropertyResultLinkClick()
+                                    }, // 点击行
+                                };
+                            }} />
                         <Pagination
                             showQuickJumper
                             onChange={this.onChangePatentCompany}//监听改变，回调函数
@@ -452,7 +455,15 @@ export default class Property extends React.Component {
             else if (this.state.currentstate == 'literature') {
                 return (
                     <div>
-                        <Table columns={Literaturecolumns} dataSource={this.state.literaturecompanynumber_data} size="middle" pagination={false} />
+                        <Table columns={Literaturecolumns} dataSource={this.state.literaturecompanynumber_data} size="middle" pagination={false}
+                            onRow={record => {
+                                return {
+                                    onClick: event => {
+                                        this.context.router.push(`/company?companyName=${record.companyName}`);
+                                        this.handlePropertyResultLinkClick()
+                                    }, // 点击行
+                                };
+                            }} />
                         <Pagination
                             showQuickJumper
                             onChange={this.onChangeLiteratureCompany}//监听改变，回调函数
@@ -466,7 +477,15 @@ export default class Property extends React.Component {
             else if (this.state.currentstate == 'copyright') {
                 return (
                     <div>
-                        <Table columns={Copyrightcolumns} dataSource={this.state.copyrightcompanynumber_data} size="middle" pagination={false} />
+                        <Table columns={Copyrightcolumns} dataSource={this.state.copyrightcompanynumber_data} size="middle" pagination={false}
+                            onRow={record => {
+                                return {
+                                    onClick: event => {
+                                        this.context.router.push(`/company?companyName=${record.companyName}`);
+                                        this.handlePropertyResultLinkClick()
+                                    }, // 点击行
+                                };
+                            }} />
                         <Pagination
                             showQuickJumper
                             onChange={this.onChangeCopyrightCompany}//监听改变，回调函数
@@ -478,38 +497,38 @@ export default class Property extends React.Component {
                 );
             }
         }
-        const PropertyHint = () =>{
+        const PropertyHint = () => {
             if (this.state.currentstate == 'patent') {
                 return (
                     <div className="hint_text">
-                    <span className="nums_text">已为您找到“
+                        <span className="nums_text">已为您找到“
                     <span className="keyword">{this.state.keyword}
-                    </span>”
+                            </span>”
                     相关专利{this.state.patentlisttotal}条
                     </span>
-                </div>
+                    </div>
                 );
             }
             else if (this.state.currentstate == 'literature') {
                 return (
                     <div className="hint_text">
-                    <span className="nums_text">已为您找到“
+                        <span className="nums_text">已为您找到“
                     <span className="keyword">{this.state.keyword}
-                    </span>”
+                            </span>”
                     相关文献{this.state.literaturelisttotal}条
                     </span>
-                </div>
+                    </div>
                 );
             }
             else if (this.state.currentstate == 'copyright') {
                 return (
                     <div className="hint_text">
-                    <span className="nums_text">已为您找到“
+                        <span className="nums_text">已为您找到“
                     <span className="keyword">{this.state.keyword}
-                    </span>”
+                            </span>”
                     相关著作权{this.state.copyrightlisttotal}条
                     </span>
-                </div>
+                    </div>
                 );
             }
         }
@@ -529,7 +548,7 @@ export default class Property extends React.Component {
                                                 <Link to='/'>首页</Link>
                                             </Breadcrumb.Item>
                                             <Breadcrumb.Item>
-                                                <Link  to={{ pathname: '/property', query: { key: this.state.keyword } }}>知识产权</Link>
+                                                <Link to={{ pathname: '/property', query: { key: this.state.keyword } }}>知识产权</Link>
                                             </Breadcrumb.Item>
                                         </Breadcrumb>
                                     </div>
