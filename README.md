@@ -17,3 +17,10 @@ npm run build
 ###网站地址
 ###打包后网站首页
 localhost:8080
+
+###git操作
+git status
+git add .
+git status
+git commit -m ""
+git push origin master
