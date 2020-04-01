@@ -1,41 +1,76 @@
-import React from 'react'
-import { List, Table, Pagination, Icon, Row, Col, Result } from 'antd';
-import "antd/dist/antd.css";
-import LiteraturePie from '../../components/echarts/LiteraturePie.js';
+import React from 'react';
 import {
-    getEnterprise_literatureQueryByKeyword,
-    getEnterprise_literatureCompanyNumber
-} from '../../actions/getEnterpriseLiterature';
-import { getEnterprise_literaturetypenumber } from '../../actions/getEnterpriseLiterature';
+    Link
+} from 'react-router';
 import { connect } from 'react-redux';
 import { toQuery } from "../../untils/utils";//封装的请求函数
-
-const columns = [
-    {
-        title: '文献机构',
-        dataIndex: 'companyName',
-    },
-    {
-        title: '文献数量',
-        dataIndex: 'literatureNumber',
-    },
-];
-
+import { List, Descriptions, Spin, Badge, Row, Col, Breadcrumb, Modal, Affix } from 'antd';
+import InfiniteScroll from 'react-infinite-scroller';
+import SearchPropertyHead from '../HeadComponent/SearchPropertyHead.js';
+import {
+    getEnterprise_literatureSpecificInfo,
+    getEnterprise_literatureQueryByKeyword
+} from '../../actions/getEnterpriseLiterature';
+import "antd/dist/antd.css";
+import './Literature.scss';
+import { createHashHistory } from 'history'; //做返回
+const history = createHashHistory();
 @connect(state => ({
     home: state.home
 }))
+
 export default class Literature extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            literaturelist_data: [],
-            literaturecompanynumber_data: [],
-            keywrod: '',
-            literaturelisttotal: 0,
-            literaturecompanytotal: 0,
+            literatureSpecificData: {},
+            keyword: '',
+            visible: false,
+            relativeData: [],
+            relativeLength: 0,
+            relativeLoading: false,
+            relativeHasMore: true,
             config: {},
-            PieData: [],
         }
+    }
+    splitKeywords = (data) => {//拆分关键字
+        //let keywords = data.document_name;
+        //console.log(keywords)
+        let regex = /,/;
+        let splitArray = new Array();
+        splitArray = ["电力","电子研发", "能源", "电器", "产业化", "发展"]
+        // splitArray = keywords.split(regex);
+        // splitArray.pop();//删除最后一个元素,
+        let config = {};
+        let totaldata = []
+        for (let keyword in splitArray) {
+            config.keyword = splitArray[keyword];
+            config.start = 1;
+            config.rows = 10;//数量为10个
+            //console.log(config)
+            this.props.dispatch(getEnterprise_literatureQueryByKeyword(toQuery(config))).then(() => {
+                let data = this.props.home.EnLiteratureQueryByKeyWordData.data;
+                totaldata.push(...data);
+                this.setState({
+                    relativeData: totaldata,
+                    relativeLength: totaldata.length
+                });
+            });
+        }
+    }
+    get_LiteratureSpecificData = (config) => {
+        config.start = 1;
+        config.rows = 1;
+        this.props.dispatch(getEnterprise_literatureSpecificInfo(toQuery(config))).then(() => {
+            let data = this.props.home.EnLiteratureSpecificData.data[0];
+            this.splitKeywords(data);
+            console.log(data);
+            if (this.mounted) {//判断组件是否装载完毕
+                this.setState({
+                    literatureSpecificData: data,
+                });
+            }
+        });
     }
     static childContextTypes = {
         location: React.PropTypes.object,
@@ -44,70 +79,46 @@ export default class Literature extends React.Component {
     static contextTypes = {
         router: React.PropTypes.object
     };
-    get_LiteraturePieData = () => {
-        let config = {};
-        config['keyword']=localStorage.patentName;
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    };
+    handleModalOk = e => {
 
-        this.props.dispatch(getEnterprise_literaturetypenumber(toQuery(config))).then(() => {
-            let data = this.props.home.EnLiteratureTypeNumberData.data;
-            if (this.mounted) {//判断组件是否装载完毕
-                this.setState({
-                    PieData: data,
-                });
-            }
+        this.setState({
+            visible: false,
         });
-    }
-    onChangeLiteratureList = (pageNumber) => {
-        this.getLiteratureList(pageNumber, this.state.config);
-    }
-    onChangeCompany = (pageNumber) => {
-        this.get_LiteratureCompanyNumber(pageNumber, this.state.config);
-    }
-    getLiteratureList = (page = 1, config = {}) => {
-        config.start = page;
-        config.rows = 10;//数量为10个
-        //console.log(config)
-        this.props.dispatch(getEnterprise_literatureQueryByKeyword(toQuery(config))).then(() => {
-            let data = this.props.home.EnLiteratureQueryByKeyWordData.data;
-            let total = this.props.home.EnLiteratureQueryByKeyWordData.total;
-            // console.log(data);
-            if (this.mounted) {//判断组件是否装载完毕
-                this.setState({
-                    literaturelist_data: data,
-                    literaturelisttotal: total
-                });
-            }
+    };
+    handleModalCancel = e => {
+        //console.log(e);
+        this.setState({
+            visible: false,
         });
-    }
-    sortLiteratureNumber = (a, b) => {
-        return b.literatureNumber - a.literatureNumber
-    }
-    get_LiteratureCompanyNumber = (page = 1, config = {}) => {
-        config.start = page;
-        config.rows = 5;//数量为5个
-        // console.log(config)
-        this.props.dispatch(getEnterprise_literatureCompanyNumber(toQuery(config))).then(() => {
-            let data = this.props.home.EnLiteratureCompanyNumberData.data;
-            let total = this.props.home.EnLiteratureCompanyNumberData.total;
-            let result = [];
-            let key = 1;
-            for (let item in data) {
-                let jsondata = {}
-                jsondata.key = key;
-                jsondata.companyName = item;
-                jsondata.literatureNumber = data[item];
-                key++;
-                result.push(jsondata);
-            }
-            result.sort(this.sortLiteratureNumber);
-            //console.log(result)
-            if (this.mounted) {//判断组件是否装载完毕
-                this.setState({
-                    literaturecompanynumber_data: result,
-                    literaturecompanytotal: total
-                });
-            }
+    };
+    handleInfiniteOnLoad = () => {
+        let { data } = this.state.relativeData;
+        this.setState({
+            loading: true,
         });
+    };
+    gobackbrowser = () => {
+        history.goBack();
+    }
+    InitFunction = () => {
+        let url = this.props.location.search;//获得目前路由的后缀，比如，?patentName=小米
+        url = decodeURIComponent(url);//解码
+        let inputvalue = url.substring(url.indexOf("=") + 1);//输入的查询值，比如，电力
+        let config = {}//要传入到接口的参数
+        config['document_name'] = inputvalue;//将tpye以变量的方式存进config对象中
+        localStorage.literatureName = inputvalue;
+        if (this.mounted) {//判断组件是否装载完毕
+            this.setState({
+                keyword: inputvalue,
+                config: config,
+            });
+        }
+        this.get_LiteratureSpecificData(config);
     }
     componentWillUnmount() {
         //组件卸载时候，注销keypress事件
@@ -120,62 +131,159 @@ export default class Literature extends React.Component {
         this.mounted = true;
     }
     componentDidMount() {
-        let url = this.props.location.search;//获得目前路由的后缀，比如，?patentName=小米
-        url = decodeURIComponent(url);//解码
-        let type = url.substring(1, url.indexOf("="));//获得查询条件，比如，patentName
-        let inputvalue = url.substring(url.indexOf("=") + 1);//输入的查询值，比如，电力
-        let config = {}//要传入到接口的参数
-        config['keyword'] = inputvalue;//将tpye以变量的方式存进config对象中
-        localStorage.literatureName = inputvalue;
-        if (this.mounted) {//判断组件是否装载完毕
-            this.setState({
-                keyword: inputvalue,
-                config: config
-            });
+        this.InitFunction();
+    }
+    skipToCompany = (e) => {
+        let companyNameId = document.getElementsByClassName("ant-badge-status-text");
+        let companyName = companyNameId[0].innerText;
+        this.context.router.push(`/company?companyName=${companyName}`);
+        localStorage.Linkfromstage = '知识产权';
+    }
+    componentWillReceiveProps(nextProps) {
+        let url = this.props.location.search;//获得目前路由的后缀，比如，?key=小米
+        url = decodeURIComponent(url);//url解码
+        let inputvalue = url.substring(url.indexOf("=") + 1);//输入的查询值，比如，小米
+        if (inputvalue != this.state.keyword) {
+            this.setState({//更新config
+                keyword: inputvalue
+            })
+            this.InitFunction();
         }
-        this.getLiteratureList(1, config);
-        this.get_LiteratureCompanyNumber(1, config);
-        this.get_LiteraturePieData();
     }
     render() {
         return (
-            <div >
-                <Row>
-                    <Col span={12}>
-                        <List
-                            itemLayout="horizontal"
-                            dataSource={this.state.literaturelist_data}
-                            renderItem={item => (
-                                <List.Item>
-                                    <List.Item.Meta
-                                    />
-                                    <div>
-                                        《{item.document_name}》
-                                    </div>
-                                    {item.companyName}
-                                    <span style={{ float: 'right' }}>{item.public_time}</span>
-                                </List.Item>
-                            )}
-                        />
-                        <Pagination
-                            showQuickJumper
-                            onChange={this.onChangeLiteratureList}//监听改变，回调函数
-                            defaultCurrent={1}//默认在第一页
-                            total={this.state.literaturelisttotal}//总条数
-                        />
-                    </Col>
-                    <Col span={12}>
-                        <Table columns={columns} dataSource={this.state.literaturecompanynumber_data} size="middle" pagination={false} />
-                        <Pagination
-                            showQuickJumper
-                            onChange={this.onChangeCompany}//监听改变，回调函数
-                            defaultCurrent={1}//默认在第一页
-                            total={this.state.literaturecompanytotal}//总条数
-                        />
-                        <LiteraturePie PieData={this.state.PieData}/>
-                    </Col>
+            <div>
+                <SearchPropertyHead />
+                <div className="container-fluid" style={{ minHeight: '600px' }}>
 
-                </Row>
+                    <div className="search_form2" /*style={{ padding: '20px 50px'}}*/>
+
+                        <div>
+                            <Row>
+                                <Col span={14}>{/* 页面左边 */}
+                                    <div className="company_top_left patent_top_left">{/*左边上半部分*/}
+                                        <div className="companyjumpbar patentjumpbar">
+                                            <Breadcrumb separator=">">
+                                                <Breadcrumb.Item>
+                                                    <Link to='/'><span>首页</span></Link>
+                                                </Breadcrumb.Item>
+                                                <Breadcrumb.Item onClick={this.gobackbrowser}>
+                                                    <span style={{ cursor: 'pointer' }}>知识产权</span>
+                                                </Breadcrumb.Item>
+                                                <Breadcrumb.Item>
+                                                    <span>科技文献详情</span>
+                                                </Breadcrumb.Item>
+                                            </Breadcrumb>
+                                        </div>
+                                    </div>
+                                    <div className="left_header_copyright">{/*左边下半部分*/}
+                                        <Descriptions  bordered>
+                                            <Descriptions.Item label="公司名" span={3}>
+                                                <Badge id='literatureskip' style={{ color: '#0F63A8', cursor: 'pointer' }} onClick={this.skipToCompany} status="processing" text={this.state.literatureSpecificData.companyName} />
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="文献名" span={3}>
+                                                <Badge status="processing" text={this.state.literatureSpecificData.document_name} />
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="类别编号" span={3}>
+                                                <Badge status="processing" text={this.state.literatureSpecificData.class_number} />
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="作者" span={3}>
+                                                <Badge status="processing" text={this.state.literatureSpecificData.author} />
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="发布时间" span={3}>
+                                                <Badge status="processing" text={this.state.literatureSpecificData.public_time} />
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="关键词" span={3}>
+                                                <Badge status="processing" text={this.state.literatureSpecificData.keyword} />
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="摘要" span={3}>
+                                                <Badge status="processing" text={this.state.literatureSpecificData.summary} />
+                                            </Descriptions.Item>
+                                        </Descriptions>,
+                                    </div>
+                                </Col>
+                                <Col span={10}>{/* 页面右边 */}
+                                    <div>
+                                        <div>
+                                            <div className="relativetitle"><p >相关文献</p></div>
+                                            <div className="demo-infinite-container">
+                                                <InfiniteScroll
+                                                    initialLoad={false}
+                                                    pageStart={0}
+                                                    loadMore={this.handleInfiniteOnLoad}
+                                                    hasMore={!this.state.relativeLoading && this.state.relativeHasMore}
+                                                    useWindow={false}
+                                                >
+                                                    <List
+                                                        itemLayout="horizontal"
+                                                        // bordered='true'
+                                                        dataSource={this.state.relativeData}
+                                                        renderItem={item => (
+                                                            <Link onClick={event => {
+                                                                this.context.router.push(`/literature?key=${item.document_name}`);
+                                                            }} >{/*根据选择的公司名跳转 */}
+                                                                <List.Item>
+                                                                    <List.Item.Meta
+
+                                                                    />
+                                                                    {item.document_name}
+                                                                </List.Item>
+                                                            </Link>
+                                                        )}
+                                                    >
+                                                        {this.state.relativeLoading && this.state.relativeHasMore && (
+                                                            <div className="demo-loading-container">
+                                                                <Spin />
+                                                            </div>
+                                                        )}
+                                                    </List>
+                                                </InfiniteScroll>
+                                            </div>
+
+
+                                            <div className="relativetitle"><p>您可能感兴趣的企业</p></div>
+                                            <div className="demo-infinite-container">
+                                                <InfiniteScroll
+                                                    initialLoad={false}
+                                                    pageStart={0}
+                                                    loadMore={this.handleInfiniteOnLoad}
+                                                    hasMore={!this.state.relativeLoading && this.state.relativeHasMore}
+                                                    useWindow={false}
+                                                >
+                                                    <List
+                                                        itemLayout="horizontal"
+                                                        // bordered='true'
+                                                        dataSource={this.state.relativeData}
+                                                        renderItem={item => (
+                                                            <Link onClick={event => {
+                                                                this.context.router.push(`/company?companyName=${item.companyName}`);
+                                                            }} >{/*根据选择的公司名跳转 */}
+                                                                <List.Item>
+                                                                    <List.Item.Meta
+                                                                    />
+                                                                    {item.companyName}
+                                                                </List.Item>
+                                                            </Link>
+                                                        )}
+                                                    >
+                                                        {this.state.relativeLoading && this.state.relativeHasMore && (
+                                                            <div className="demo-loading-container">
+                                                                <Spin />
+                                                            </div>
+                                                        )}
+                                                    </List>
+                                                </InfiniteScroll>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
         )
     }

@@ -1,7 +1,9 @@
 import axios from 'axios';
 import actions from '../constants/actions';
 import configs from '../constants/configs';
-
+import {
+    getTokenHeader
+} from '../../src/untils/utils';
 const {
     GET_RELATIONSHIP_SUCCESS,//查询公司关系图
 	GET_RELATIONSHIP_FAILURE,

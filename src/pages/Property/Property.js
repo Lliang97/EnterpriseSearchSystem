@@ -173,7 +173,7 @@ export default class Property extends React.Component {
         this.props.dispatch(getEnterprise_literatureQueryByKeyword(toQuery(config))).then(() => {
             let data = this.props.home.EnLiteratureQueryByKeyWordData.data;
             let total = this.props.home.EnLiteratureQueryByKeyWordData.total;
-            // console.log(data);
+            //console.log(data);
             if (this.mounted) {//判断组件是否装载完毕
                 this.setState({
                     literaturelist_data: data,
@@ -384,13 +384,15 @@ export default class Property extends React.Component {
                             bordered='true'
                             dataSource={this.state.literaturelist_data}
                             renderItem={item => (
+                                <Link to={{ pathname: '/literature', query: { key: item.document_name } }}>
                                 <List.Item>
                                     <List.Item.Meta
+                                    title={"《"+item.document_name+"》"}
                                     />
-                                    《{item.document_name}》
                                     {item.companyName}
                                     <span style={{ float: 'right' }}>{item.public_time}</span>
                                 </List.Item>
+                                </Link>
                             )}
                         />
                         <Pagination
@@ -410,6 +412,7 @@ export default class Property extends React.Component {
                             bordered='true'
                             dataSource={this.state.copyrightlist_data}
                             renderItem={item => (
+                                <Link to={{ pathname: '/copyright', query: { key: item.softwareName } }}>
                                 <List.Item>
                                     <List.Item.Meta
                                         title={item.softwareName}
@@ -417,6 +420,7 @@ export default class Property extends React.Component {
                                     {item.companyName}
                                     <span style={{ float: 'right' }}>{item.registrationApprovalDate}</span>
                                 </List.Item>
+                                </Link>
                             )}
                         />
                         <Pagination

@@ -13,7 +13,7 @@
 .corpration {//战略合作样式
     position: absolute;
     top: 0px;
-    right: 200px;
+    right: 150px;
     color: black;
     font-size: 16px;
 }
@@ -24,4 +24,12 @@
     float: left;
     top: 13px;
     margin:0 10px;
+}
+.login-form{
+    .ant-input{
+        height: 40px;
+        font-size: 14px;
+        border-radius: 0;
+        color: #000;
+    }
 }

@@ -48,7 +48,7 @@ module.exports = {
 			{// 引用字体图片和svg图片
 				test: /\.(woff|woff2|eot|ttf|otf)$/,
 				use: ['url-loader']
-			}
+            },
 		]
     },
     resolve: {//省去不写后缀
@@ -72,6 +72,10 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         // 打包前先清空
         new CleanWebpackPlugin(),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+          })
     ],
     // webpack-dev-server 配置
 	devServer: {

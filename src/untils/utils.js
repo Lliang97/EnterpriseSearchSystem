@@ -1,4 +1,6 @@
-import message from 'antd';
+import {
+    message
+} from 'antd';
 import base64 from 'base-64';
 var md5 = require('md5');
 export function toQuery(obj) {

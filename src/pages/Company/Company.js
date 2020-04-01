@@ -25,7 +25,7 @@ import {
 import { getRelationship } from '../../actions/getEnterpriseInfo';
 import { getEnterprise_copyright } from '../../actions/getEnterpriseWorkCopyright';
 import { getEnterprise_wordcloud } from '../../actions/getEnterpriseWordCloud';
-import { List, Menu, Pagination, Icon, Row, Col, Breadcrumb } from 'antd';
+import { List, Menu, Pagination, Icon, Row, Col, Breadcrumb, Rate ,Empty  } from 'antd';
 import Radar from '../../components/echarts/radar.js';
 import echarts from 'echarts/lib/echarts';
 import SearchResultHead from '../HeadComponent/SearchResultHead.js'
@@ -39,6 +39,7 @@ import 'echarts/lib/component/markPoint';
 import 'echarts/lib/component/markLine';
 import { createHashHistory } from 'history'; //做返回
 const history = createHashHistory();
+const desc = ['差', '一般', '中', '良', '优'];
 @connect(state => ({
   home: state.home
 }))
@@ -79,6 +80,7 @@ export default class Company extends React.Component {//搜索结果页面
       buttonValue: '企业搜索',
       innovation_data: [],//创新能力数据
       enterprise_wordcloud_data: [],//词云数据
+      score: 3,//创新能力分值
     }
   };
   static childContextTypes = {
@@ -580,6 +582,14 @@ export default class Company extends React.Component {//搜索结果页面
     history.goBack();
   }
   render() {
+    const emptyCloud = () =>{
+      let clouddata = this.state.enterprise_wordcloud_data;
+      if(clouddata === undefined || clouddata.length == 0){
+        return (<Empty />)
+      }else{
+        return (<CompanyPatentWorldCloud wordclouddata={this.state.enterprise_wordcloud_data} />)
+      }
+    }
     const current3 = this.state.current3;//判断目前是在哪一块
     const Info = () => {
       if (current3 === 'literature') {
@@ -591,12 +601,15 @@ export default class Company extends React.Component {//搜索结果页面
               dataSource={this.state.allinfo_data}
               // pagination= 
               renderItem={item => (
-
-                <List.Item>
-                  <List.Item.Meta
-                    title={item.document_name} />
-                  {item.author} - 《{item.source}》
+                <Link onClick={event => {
+                  this.context.router.push(`/literature?key=${item.document_name}`);
+                }} >
+                  <List.Item>
+                    <List.Item.Meta
+                      title={item.document_name} />
+                    {item.author} - 《{item.source}》
                 </List.Item>
+                </Link>
               )}
             />
             <Pagination
@@ -617,13 +630,16 @@ export default class Company extends React.Component {//搜索结果页面
               dataSource={this.state.allinfo_data}
               // pagination= 
               renderItem={item => (
-
-                <List.Item>
-                  <List.Item.Meta
-                    title={item.workName}
-                  />
-                  申请时间: {item.firstPublishedDate}
-                </List.Item>
+                <Link onClick={event => {
+                  this.context.router.push(`/copyright?key=${item.softwareName}`);
+                }} >
+                  <List.Item>
+                    <List.Item.Meta
+                      title={item.softwareName}
+                    />
+                  申请时间: {item.registrationApprovalDate}
+                  </List.Item>
+                </Link>
               )}
             />
             <Pagination
@@ -680,7 +696,7 @@ export default class Company extends React.Component {//搜索结果页面
               dataSource={this.state.allinfo_data}
               // pagination= 
               renderItem={item => (
-
+                <a href={ item.url }>
                 <List.Item>
                   <List.Item.Meta
                     title={item.title}
@@ -688,6 +704,7 @@ export default class Company extends React.Component {//搜索结果页面
                   来源：{item.source}
 
                 </List.Item>
+                </a>
               )}
             />
             <Pagination
@@ -757,10 +774,17 @@ export default class Company extends React.Component {//搜索结果页面
                     </div>
                     <div className="company_infos">
                       <em className="f_img">{this.state.enterprise_search_data.companyName}</em>
-                      <span className="blo">公司名：{this.state.enterprise_search_data.companyName}</span>
-                      <span className="blo">法人：{this.state.enterprise_search_data.legalPerson}</span>
+                      <span className="blo">企业名：{this.state.enterprise_search_data.companyName}</span>
+                      <span className="blo">企业法人：{this.state.enterprise_search_data.legalPerson}</span>
                       <span className="blo">领域：{this.state.enterprise_search_data.industry}</span>
-                      <span className="blo">公司地址：{this.state.enterprise_search_data.address}</span>
+                      <span className="blo">企业地址：{this.state.enterprise_search_data.address}</span>
+                      <span className="blo">创新能力：
+                        <Rate tooltips={desc} disabled value={this.state.score} />
+                        {this.state.score ? <span className="ant-rate-text">{desc[this.state.score - 1]}</span> : ''}
+                      </span>
+                      <span className="blo">基本信息和发展：<Link onClick={event => {
+                        this.context.router.push(`/base?companyName=${this.state.enterprise_search_data.companyName}`);
+                      }} >查看详情</Link></span>
                     </div>
                   </div>
                   <div className="left_header">{/*左边下半部分*/}
@@ -808,7 +832,7 @@ export default class Company extends React.Component {//搜索结果页面
                       biddata={0}
                     />
                     <div style={{ width: '100%', height: 250 }}>
-                      <CompanyPatentWorldCloud wordclouddata={this.state.enterprise_wordcloud_data} />
+                      {emptyCloud()}
                     </div>
                     <div id="relationship" style={{ width: '100%', height: 250 }}></div>
 

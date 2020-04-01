@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Link
 } from 'react-router';
@@ -147,10 +147,6 @@ export default class Patent extends React.Component {
             })
             this.InitFunction();
         }
-    }
-    relativeOnclick = (e) => {
-        console.log(e)
-        //this.context.router.push(`/company?companyName=${record.companyName}`
     }
     render() {
         return (

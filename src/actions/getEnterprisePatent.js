@@ -1,7 +1,9 @@
 import axios from 'axios';
 import actions from '../constants/actions';
 import configs from '../constants/configs';
-
+import {
+    getTokenHeader
+} from '../../src/untils/utils';
 const {
     GET_ENTERPRISE_PATENT_SUCCESS,//查询公司专利
 	GET_ENTERPRISE_PATENT_FAILURE,
@@ -15,6 +17,12 @@ const {
 	GET_ENTERPRISE_PATENTCOMPANYNUMBER_FAILURE,
 	GET_ENTERPRISE_PATENTSPECIFICINFO_SUCCESS,//查询专利具体的信息
 	GET_ENTERPRISE_PATENTSPECIFICINFO_FAILURE,
+	PUT_PATENT_SUCCESS,//修改
+	PUT_PATENT_FAILURE,
+	INSERT_PATENT_SUCCESS,//添加
+	INSERT_PATENT_FAILURE,
+	DELETE_PATENT_SUCCESS,//删除
+	DELETE_PATENT_FAILURE,
 } = actions;
 const baseUrl = configs.baseUrl;
 export function getEnterprise_patent(query = '') {
@@ -113,3 +121,60 @@ export function getEnterprise_patentSpecificInfo(query = '') {
 		}
 	};
 };
+export function applychange_patent(config,query = ''){
+    return async(dispatch) => {
+        try{
+            let headers = getTokenHeader({})
+            const data = (await axios.put(`${baseUrl}/patent/update.do${query}`,config,{
+                headers:headers
+            })).data;
+            dispatch({
+                type:PUT_PATENT_SUCCESS,
+                data:data
+            })
+        }catch(error){
+            dispatch({
+                type:PUT_PATENT_FAILURE,
+                error:Error("修改专利失败，请稍后再试")
+            })
+        }
+    }
+}
+export function insert_patent(config,query = '') {
+    return async(dispatch) => {
+        try{
+            let headers = getTokenHeader({})
+            const data = (await axios.post(`${baseUrl}/patent/insert.do${query}`,config,{
+                headers:headers
+            })).data;
+            dispatch({
+                type:INSERT_PATENT_SUCCESS,
+                data:data
+            })
+        }catch(error){
+            dispatch({
+                type:INSERT_PATENT_FAILURE,
+                error:Error("添加专利失败，请稍后再试")
+            })
+        }
+    }
+}
+export function delete_patent(query = '',config) {
+    return async(dispatch) => {
+        try{
+            let headers = getTokenHeader({})
+            const data = (await axios.delete(`${baseUrl}patent/delete.do${query}`,{
+                headers:headers
+            },config)).data;
+            dispatch({
+                type:DELETE_PATENT_SUCCESS,
+                data:data
+            })
+        }catch(error){
+            dispatch({
+                type:DELETE_PATENT_FAILURE,
+                error:Error("删除专利失败，请稍后再试")
+            })
+        }
+    }
+}

@@ -76,7 +76,7 @@ export default class LiteraturePie extends React.Component {
     };
     convert(topicName,opinionNum){
         const data=this.props.PieData;
-        console.log(data);
+        // console.log(data);
         for(let item in data){
             topicName.push(item);
         }

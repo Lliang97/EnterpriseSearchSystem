@@ -1,0 +1,32 @@
+.left_header_copyright{
+    font: 15px;
+    color: #333;
+    margin-top: 20px;
+    padding: 0 20px 0 10px;
+    .ant-descriptions-bordered .ant-descriptions-item-label, .ant-descriptions-bordered .ant-descriptions-item-content{
+        padding: 30px 24px;
+    }
+}
+.relativetitle{
+    padding: 20px 15px 5px;
+    font-size: 18px;
+    line-height: 20px;
+    color: #222;
+    font-weight: 600;
+    p{
+        margin-bottom: 0.8em;
+    }
+}
+.demo-infinite-container{
+   border: 1px solid #e8e8e8;
+   border-radius: 4px;
+   overflow: auto;
+   padding: 8px 24px;
+   height: 280px;
+}
+.demo-loading-container {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+}

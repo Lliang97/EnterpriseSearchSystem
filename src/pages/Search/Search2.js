@@ -26,8 +26,8 @@ export default class Search2 extends React.Component {
       inputkey: '',//当前搜索框中的值
       buttonValue: '企业评估',//按钮值
       SystemStaticData: [],
-      enterpriseHotSearch: ['川开电气有限公司', '东方日立(成都)电控设备有限公司', '成都宝通天宇电子科技有限公司', '东方电气集团东方汽轮机有限公司'],
-      patentHotSearch: ['一种','方法','装置','系统','自动'],
+      enterpriseHotSearch: ['川开电气有限公司','成都安朗电气自控设备有限公司', '东方日立(成都)电控设备有限公司', '成都宝通天宇电子科技有限公司', '东方电气集团东方汽轮机有限公司'],
+      patentHotSearch: ['一种','方法','装置','系统','自动','多晶硅'],
       literatureHotSearch: ['多晶硅','设计','质量控制','管理','水利水电工程'],
       copyrightHotSearch: ['软件','智能','平台','管理系统','系统软件'],
       // propertySearchKey: 'patent',
@@ -124,7 +124,6 @@ export default class Search2 extends React.Component {
   componentWillMount() {//装载完毕
     this.mounted = true;
   }
-
   render() {
     // const propertymenu = (
     //   <Menu onClick={this.handlePropertyMenuClick}>
