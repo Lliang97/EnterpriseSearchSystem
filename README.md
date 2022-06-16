@@ -24,3 +24,5 @@ git add .
 git status
 git commit -m ""
 git push origin master
+
+![image](https://user-images.githubusercontent.com/31957512/174075114-7a1d9db5-ca93-4461-9d5e-b3252563166b.png)
